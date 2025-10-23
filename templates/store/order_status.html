@@ -31,8 +31,8 @@
     <div class="flex items-center space-x-6">
       <nav class="space-x-6 text-lg">
         <a href="/order_history" class="hover:text-yellow-400 transition duration-300">注文履歴</a>
-        <a href="/table_manage" class="hover:text-yellow-400 transition duration-300">卓管理</a>
-        <a href="/order_status" class="text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1">注文状況</a>
+        <a href="{{url_for('store_bp.store_seat_status')}}" class="hover:text-yellow-400 transition duration-300">卓管理</a>
+        <a href="{{url_for('store_bp.store_order_status')}}" class="text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1">注文状況</a>
       </nav>
 
       <!-- ⚙️ ハンバーガー設定ボタン -->
@@ -56,7 +56,7 @@
   >
     <div class="max-w-6xl mx-auto flex justify-end space-x-6 py-3 pr-6">
       <a href="/logout" class="hover:text-yellow-400 transition duration-300">ログアウト</a>
-      <a href="/manager_login" class="hover:text-yellow-400 transition duration-300">マネージャーログイン</a>
+      <a href="{{ url_for('manager.manager_login') }}" class="hover:text-yellow-400 transition duration-300">マネージャーログイン</a>
     </div>
   </div>
 </header>

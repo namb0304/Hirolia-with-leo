@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>注文状況管理</title>
+  <title>注文ページ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes fadeInUp {
@@ -15,147 +15,92 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200">
 
-  <!-- ヘッダー -->
-  <header class="bg-gray-900 text-white shadow-md py-4">
-    <div class="max-w-6xl mx-auto flex justify-between items-center px-6">
-      <h1 class="text-2xl font-bold tracking-wide">注文管理システム</h1>
-      <nav class="space-x-6">
-        <a href="/order_history" class="hover:text-yellow-300 transition">注文履歴</a>
-        <a href="/table_manage" class="hover:text-yellow-300 transition">卓管理</a>
-        <a href="/order_status" class="hover:text-yellow-300 transition">注文状況</a>
-      </nav>
+<body class="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 font-sans flex flex-col">
+
+  <!-- ▼ ヘッダー（固定） -->
+  <header class="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
+
+      <!-- 店舗名 -->
+      <h1 class="text-2xl font-bold tracking-wide">{{ store_name }}_🍜 注文管理システム</h1>
+
+      <!-- ナビゲーション（右寄せ） -->
+      <div class="flex items-center space-x-6">
+        <nav class="space-x-6 text-lg">
+          <a href="/order_history" class="hover:text-yellow-400 transition duration-300">注文履歴</a>
+          <a href="{{url_for('store_bp.store_seat_status')}}" class="text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1">卓管理</a>
+          <a href="{{url_for('store_bp.store_order_status')}}" class="hover:text-yellow-400 transition duration-300">注文状況</a>
+        </nav>
+
+        <!-- ⚙️ ハンバーガー設定ボタン -->
+        <button 
+          id="menu-btn" 
+          class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition duration-300"
+        >
+          <!-- ハンバーガーアイコン -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ▼ サブヘッダー（非表示→クリックで表示） -->
+    <div 
+      id="submenu" 
+      class="hidden bg-gray-800 border-t border-gray-700 text-gray-100 text-center"
+    >
+      <div class="max-w-6xl mx-auto flex justify-end space-x-6 py-3 pr-6">
+        <a href="/logout" class="hover:text-yellow-400 transition duration-300">ログアウト</a>
+        <a href="{{url_for('manager.manager_login')}}" class="hover:text-yellow-400 transition duration-300">マネージャーログイン</a>
+      </div>
     </div>
   </header>
 
-  <!-- メイン内容 -->
-  <main class="flex flex-col items-center mt-10 px-4 fade-in-up">
-
-    <!-- テーブル番号入力フォーム -->
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200">
-      <h2 class="text-2xl font-semibold text-gray-800 text-center mb-6">テーブル別注文確認</h2>
-      <form action="/order_status" method="POST" class="flex flex-col space-y-4">
-        <input 
-          type="number" 
-          name="table_number" 
-          placeholder="テーブル番号を入力" 
-          required
-          class="px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 outline-none"
-        >
-        <button 
-          type="submit"
-          class="py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-black transition duration-300 shadow-md hover:shadow-lg"
-        >
-          注文内容を表示
-        </button>
-      </form>
-    </div>
-
-    <!-- ▼常に表示される注文一覧 -->
-    <div class="bg-white mt-8 p-8 rounded-2xl shadow-lg w-full max-w-3xl border border-gray-200">
-      <h3 class="text-xl font-semibold text-gray-700 mb-6">現在の注文一覧</h3>
+  <!-- ▼ テーブル状況マップ（中央配置） -->
+  <main class="flex-1 flex justify-center items-center px-4 pt-24 pb-12">
+    <section class="w-full max-w-4xl bg-white p-8 rounded-2xl shadow-xl border border-gray-200 fade-in-up">
+      <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">🪑 テーブル状況マップ</h3>
       
-      <div class="space-y-4">
-
-        <!-- ダミー注文① -->
-        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div>
-            <p class="font-semibold text-gray-800">醤油ラーメン（テーブル5）</p>
-            <p class="text-gray-600 text-sm">数量: 2　金額: ¥1,600</p>
-          </div>
-          <form action="/complete_order" method="POST">
-            <input type="hidden" name="order_id" value="1">
-            <button 
-              type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-            >
-              注文完了
-            </button>
-          </form>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 justify-items-center">
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-red-500 text-white font-semibold">
+          <p>テーブル 1</p>
+          <p class="text-sm mt-1">注文あり</p>
         </div>
-
-        <!-- ダミー注文② -->
-        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div>
-            <p class="font-semibold text-gray-800">餃子（6個）（テーブル3）</p>
-            <p class="text-gray-600 text-sm">数量: 1　金額: ¥400</p>
-          </div>
-          <form action="/complete_order" method="POST">
-            <input type="hidden" name="order_id" value="2">
-            <button 
-              type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-            >
-              注文完了
-            </button>
-          </form>
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-yellow-400 text-gray-900 font-semibold">
+          <p>テーブル 2</p>
+          <p class="text-sm mt-1">着席中</p>
         </div>
-
-        <!-- ダミー注文③ -->
-        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div>
-            <p class="font-semibold text-gray-800">チャーハン（テーブル2）</p>
-            <p class="text-gray-600 text-sm">数量: 1　金額: ¥700</p>
-          </div>
-          <form action="/complete_order" method="POST">
-            <input type="hidden" name="order_id" value="3">
-            <button 
-              type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-            >
-              注文完了
-            </button>
-          </form>
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-green-400 text-gray-900 font-semibold">
+          <p>テーブル 3</p>
+          <p class="text-sm mt-1">空席</p>
         </div>
-
-        <!-- ダミー注文④ -->
-        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div>
-            <p class="font-semibold text-gray-800">烏龍茶（テーブル1）</p>
-            <p class="text-gray-600 text-sm">数量: 2　金額: ¥300</p>
-          </div>
-          <form action="/complete_order" method="POST">
-            <input type="hidden" name="order_id" value="4">
-            <button 
-              type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-            >
-              注文完了
-            </button>
-          </form>
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-red-500 text-white font-semibold">
+          <p>テーブル 4</p>
+          <p class="text-sm mt-1">注文あり</p>
         </div>
-
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-yellow-400 text-gray-900 font-semibold">
+          <p>テーブル 5</p>
+          <p class="text-sm mt-1">着席中</p>
+        </div>
+        <div class="w-32 h-32 flex flex-col justify-center items-center rounded-xl shadow-md border border-gray-300 bg-green-400 text-gray-900 font-semibold">
+          <p>テーブル 6</p>
+          <p class="text-sm mt-1">空席</p>
+        </div>
       </div>
-    </div>
-
-    <!-- ▼Flask側で条件一致したときのみ表示（検索結果） -->
-    {% if orders %}
-    <div class="bg-white mt-8 p-8 rounded-2xl shadow-lg w-full max-w-3xl border border-gray-200">
-      <h3 class="text-xl font-semibold text-gray-700 mb-6">テーブル {{ table_number }} の注文一覧</h3>
-      <div class="space-y-4">
-        {% for order in orders %}
-        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div>
-            <p class="font-semibold text-gray-800">{{ order.item_name }}</p>
-            <p class="text-gray-600 text-sm">数量: {{ order.quantity }}　金額: ¥{{ order.price }}</p>
-          </div>
-          <form action="/complete_order" method="POST">
-            <input type="hidden" name="order_id" value="{{ order.id }}">
-            <button 
-              type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-            >
-              注文完了
-            </button>
-          </form>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-
+    </section>
   </main>
+
+  <!-- ▼ JS：メニュー開閉 -->
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const submenu = document.getElementById('submenu');
+    menuBtn.addEventListener('click', () => {
+      submenu.classList.toggle('hidden');
+    });
+  </script>
 
 </body>
 </html>
