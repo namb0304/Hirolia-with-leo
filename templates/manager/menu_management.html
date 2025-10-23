@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>メニュー注文ページ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 flex flex-col items-center">
+
+  <!-- タイトル -->
+  <header class="w-full text-center py-10 fade-in-up">
+    <h1 class="text-3xl font-semibold text-gray-800">メニュー一覧</h1>
+    <p class="text-gray-500 mt-2">お好きな商品を選んで注文してください</p>
+  </header>
+
+  <!-- メニュー一覧 -->
+  <main class="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-6 fade-in-up">
+
+    {% for menu in menus %}
+    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200">
+      <!-- メニュー情報 -->
+      <div class="p-6 flex flex-col justify-between h-full">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ menu.menu_name }}</h2>
+          <p class="text-gray-600 text-sm mb-3">{{ menu.menu_description }}</p>
+          <span class="inline-block text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">{{ menu.menu_category }}</span>
+        </div>
+        <div class="mt-5">
+          <p class="text-lg font-bold text-gray-900 mb-3">¥{{ menu.menu_price }}</p>
+
+          <!-- 数量選択 + 注文ボタン -->
+          <form action="/order" method="POST" class="flex items-center justify-between space-x-3">
+            <input type="hidden" name="menu_id" value="{{ menu.menu_id }}">
+            <input type="number" name="quantity" value="1" min="1"
+              class="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:outline-none">
+            <button type="submit"
+              class="flex-1 py-2 bg-gray-900 text-white font-semibold rounded-lg hover:bg-black transition-all duration-300">
+              注文する
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="text-gray-500 text-sm text-center mt-10 mb-6">
+    © 2025 Store System — Order Page
+  </footer>
+
+</body>
+</html>

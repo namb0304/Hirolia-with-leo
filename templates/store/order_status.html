@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注文状況管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 font-sans">
+
+<!-- ▼ ヘッダー（固定） -->
+<header class="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
+
+    <!-- 店舗名 -->
+    <h1 class="text-2xl font-bold tracking-wide">{{ store_name }}_🍜 注文管理システム</h1>
+
+    <!-- ナビゲーション（右寄せ） -->
+    <div class="flex items-center space-x-6">
+      <nav class="space-x-6 text-lg">
+        <a href="/order_history" class="hover:text-yellow-400 transition duration-300">注文履歴</a>
+        <a href="/table_manage" class="hover:text-yellow-400 transition duration-300">卓管理</a>
+        <a href="/order_status" class="text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1">注文状況</a>
+      </nav>
+
+      <!-- ⚙️ ハンバーガー設定ボタン -->
+      <button 
+        id="menu-btn" 
+        class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition duration-300"
+      >
+        <!-- ハンバーガーアイコン -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ▼ サブヘッダー（非表示→クリックで表示） -->
+  <div 
+    id="submenu" 
+    class="hidden bg-gray-800 border-t border-gray-700 text-gray-100 text-center"
+  >
+    <div class="max-w-6xl mx-auto flex justify-end space-x-6 py-3 pr-6">
+      <a href="/logout" class="hover:text-yellow-400 transition duration-300">ログアウト</a>
+      <a href="/manager_login" class="hover:text-yellow-400 transition duration-300">マネージャーログイン</a>
+    </div>
+  </div>
+</header>
+
+  <!-- ▼ テーブル番号入力フォーム（右上固定） -->
+<div class="fixed top-20 right-5 flex items-start space-x-3 fade-in-up">
+
+  <!-- データ更新ボタン -->
+  <form action="/refresh_orders" method="POST">
+    <button 
+      type="submit"
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 text-sm font-semibold"
+    >
+      データ更新
+    </button>
+  </form>
+
+  <!-- テーブル確認フォーム -->
+  <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200 w-56">
+    <h2 class="text-base font-semibold text-gray-800 text-center mb-3">テーブル確認</h2>
+    <form action="/order_status" method="POST" class="flex flex-col space-y-2">
+      <input 
+        type="number" 
+        name="table_number" 
+        placeholder="テーブル番号" 
+        required
+        class="px-2.5 py-1.5 rounded-md border border-gray-300 text-sm focus:ring-1 focus:ring-gray-400 outline-none transition duration-200"
+      >
+      <button 
+        type="submit"
+        class="py-1.5 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition duration-300 shadow-sm"
+      >
+        表示
+      </button>
+    </form>
+  </div>
+
+</div>
+
+  <!-- ▼ メイン内容 -->
+  <main class="flex flex-col items-center pt-32 pb-20 px-4 fade-in-up">
+
+    <!-- タイトル -->
+    <h2 class="text-3xl font-bold text-gray-800 mb-8 tracking-wide">📋 現在の注文一覧</h2>
+
+    <!-- ▼ 注文一覧 -->
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-3xl border border-gray-200">
+      <div class="space-y-5">
+
+        <!-- ダミー注文① -->
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-200">
+          <div>
+            <p class="font-semibold text-gray-800 text-lg">醤油ラーメン（テーブル5）</p>
+            <p class="text-gray-600 text-sm">数量: 2　金額: ¥1,600</p>
+          </div>
+          <form action="/complete_order" method="POST">
+            <input type="hidden" name="order_id" value="1">
+            <button 
+              type="submit"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
+            >
+              注文完了
+            </button>
+          </form>
+        </div>
+
+        <!-- ダミー注文② -->
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-200">
+          <div>
+            <p class="font-semibold text-gray-800 text-lg">餃子（6個）（テーブル3）</p>
+            <p class="text-gray-600 text-sm">数量: 1　金額: ¥400</p>
+          </div>
+          <form action="/complete_order" method="POST">
+            <input type="hidden" name="order_id" value="2">
+            <button 
+              type="submit"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
+            >
+              注文完了
+            </button>
+          </form>
+        </div>
+
+        <!-- ダミー注文③ -->
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-200">
+          <div>
+            <p class="font-semibold text-gray-800 text-lg">チャーハン（テーブル2）</p>
+            <p class="text-gray-600 text-sm">数量: 1　金額: ¥700</p>
+          </div>
+          <form action="/complete_order" method="POST">
+            <input type="hidden" name="order_id" value="3">
+            <button 
+              type="submit"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
+            >
+              注文完了
+            </button>
+          </form>
+        </div>
+
+        <!-- ダミー注文④ -->
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-200">
+          <div>
+            <p class="font-semibold text-gray-800 text-lg">烏龍茶（テーブル1）</p>
+            <p class="text-gray-600 text-sm">数量: 2　金額: ¥300</p>
+          </div>
+          <form action="/complete_order" method="POST">
+            <input type="hidden" name="order_id" value="4">
+            <button 
+              type="submit"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
+            >
+              注文完了
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ▼ Flask側での検索結果表示 -->
+    {% if orders %}
+    <div class="bg-white mt-10 p-8 rounded-2xl shadow-xl w-full max-w-3xl border border-gray-200 fade-in-up">
+      <h3 class="text-2xl font-bold text-gray-800 mb-6">テーブル {{ table_number }} の注文一覧</h3>
+      <div class="space-y-4">
+        {% for order in orders %}
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-200">
+          <div>
+            <p class="font-semibold text-gray-800 text-lg">{{ order.item_name }}</p>
+            <p class="text-gray-600 text-sm">数量: {{ order.quantity }}　金額: ¥{{ order.price }}</p>
+          </div>
+          <form action="/complete_order" method="POST">
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <button 
+              type="submit"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
+            >
+              注文完了
+            </button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </main>
+
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const submenu = document.getElementById("submenu");
+
+  menuBtn.addEventListener("click", () => {
+    submenu.classList.toggle("hidden");
+    submenu.classList.toggle("animate-slide-down");
+  });
+</script>
+<!-- ▼ サブヘッダー開閉アニメーション -->
+<style>
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+</style>
+
+</body>
+</html>
