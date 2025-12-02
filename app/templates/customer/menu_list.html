@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - メニュー</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+    <style>
+        /* カテゴリタブ */
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 16px 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 24px;
+            position: sticky;
+            top: 60px;
+            background-color: var(--bg-primary);
+            z-index: 50;
+        }
+        
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-tab {
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        
+        .category-tab.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* 商品グリッド */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        @media (max-width: 640px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle">
+                <span data-i18n="menu">メニュー</span> - 
+                <span id="table-info">テーブル: -</span>
+            </p>
+        </div>
+
+        <div class="page-container">
+            <!-- カテゴリタブ -->
+            <div class="category-tabs" id="category-tabs">
+                <button class="category-tab active" data-category="all">
+                    🍽️ <span data-i18n="all">すべて</span>
+                </button>
+                <button class="category-tab" data-category="curry">
+                    🍛 <span data-i18n="curry">カレー</span>
+                </button>
+                <button class="category-tab" data-category="naan">
+                    🥖 <span data-i18n="naan">ナン</span>
+                </button>
+                <button class="category-tab" data-category="drinks">
+                    🥤 <span data-i18n="drinks">ドリンク</span>
+                </button>
+                <button class="category-tab" data-category="desserts">
+                    🍨 <span data-i18n="desserts">デザート</span>
+                </button>
+                <button class="category-tab" data-category="sides">
+                    🍗 <span data-i18n="sides">サイド</span>
+                </button>
+            </div>
+
+            <!-- メニューグリッド -->
+            <div class="menu-grid" id="menu-grid">
+                <!-- JavaScriptで動的に生成 -->
+            </div>
+
+            <!-- ローディング -->
+            <div class="loading hidden" id="loading">
+                <div class="spinner"></div>
+                <p class="mt-md" data-i18n="loading">読み込み中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 固定タブバー -->
+    <div class="tab-bar">
+        <div class="tab-item" id="tab-cart">
+            <div style="position: relative;">
+                <div class="icon">🛒</div>
+                <span class="badge hidden" id="cart-badge">0</span>
+            </div>
+            <div class="label" data-i18n="tab_cart">カート</div>
+        </div>
+        <div class="tab-item" id="tab-naan">
+            <div class="icon">🍞</div>
+            <div class="label" data-i18n="tab_naan">ナンおかわり</div>
+        </div>
+        <div class="tab-item" id="tab-call">
+            <div class="icon">🔔</div>
+            <div class="label" data-i18n="tab_call">店員呼出</div>
+        </div>
+        <div class="tab-item" id="tab-history">
+            <div class="icon">📋</div>
+            <div class="label" data-i18n="tab_history">注文履歴</div>
+        </div>
+    </div>
+
+    <!-- 店員呼び出し確認モーダル -->
+    <div class="modal-overlay" id="call-staff-modal">
+        <div class="modal">
+            <div class="modal-header">🔔 店員を呼びますか?</div>
+            <div class="modal-body">
+                テーブル <span id="call-table-number">-</span> から店員を呼び出します
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('call-staff-modal')">
+                    <span data-i18n="cancel">キャンセル</span>
+                </button>
+                <button class="btn btn-primary" style="flex: 1;" id="confirm-call-btn">
+                    <span data-i18n="confirm">呼ぶ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/menu_list.js"></script>
+</body>
+</html>

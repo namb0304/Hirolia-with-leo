@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - 初期設定</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle">モバイルオーダーシステム</p>
+        </div>
+
+        <div class="page-container">
+            <!-- テーブル番号入力 -->
+            <div class="card mb-lg">
+                <h2 class="card-header" id="table-title">テーブル番号を入力</h2>
+                <div class="form-group">
+                    <label for="table-number" class="form-label" id="table-label">テーブル番号</label>
+                    <input 
+                        type="number" 
+                        id="table-number" 
+                        class="form-input" 
+                        placeholder="例: 3" 
+                        min="1" 
+                        max="50"
+                    >
+                    <div id="table-error" class="form-error hidden"></div>
+                </div>
+            </div>
+
+            <!-- 言語選択 -->
+            <div class="card mb-xl">
+                <h2 class="card-header" id="language-title">言語を選択 / Select Language / भाषा चयन गर्नुहोस्</h2>
+                <div class="option-grid">
+                    <button class="option-btn" data-lang="ja" id="lang-ja">
+                        <div class="icon">🇯🇵</div>
+                        <div class="label">日本語</div>
+                    </button>
+                    <button class="option-btn" data-lang="en" id="lang-en">
+                        <div class="icon">🇺🇸</div>
+                        <div class="label">English</div>
+                    </button>
+                    <button class="option-btn" data-lang="ne" id="lang-ne">
+                        <div class="icon">🇳🇵</div>
+                        <div class="label">नेपाली</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 開始ボタン -->
+            <button class="btn btn-primary btn-full btn-lg" id="start-btn" disabled>
+                注文を開始
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/initial_setup.js"></script>
+</body>
+</html>

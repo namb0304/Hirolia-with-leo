@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - 商品詳細</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+    <style>
+        .product-detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .product-detail-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .product-name {
+            font-size: var(--font-xxl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .product-price {
+            font-size: var(--font-xl);
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .product-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .option-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .option-section-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .required-badge {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option-item:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        .option-item.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            margin-right: var(--spacing-md);
+            width: 20px;
+            height: 20px;
+        }
+        
+        .option-label {
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .option-price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .quantity-section {
+            background-color: var(--bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .bottom-bar-content {
+            max-width: 640px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .total-price {
+            flex: 1;
+        }
+        
+        .total-price-label {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        .total-price-amount {
+            font-size: var(--font-xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle" data-i18n="menu">商品詳細</p>
+        </div>
+
+        <div class="page-container" style="padding-bottom: 100px;">
+            <!-- 商品画像 -->
+            <img id="product-image" src="" alt="" class="product-detail-image">
+            
+            <!-- 商品情報 -->
+            <div class="product-detail-header">
+                <h1 class="product-name" id="product-name">商品名</h1>
+                <div class="product-price" id="product-base-price">¥0</div>
+                <p class="product-description" id="product-description">商品説明</p>
+            </div>
+            
+            <!-- カレーセットの場合のオプション -->
+            <div id="curry-options" class="hidden">
+                <!-- 辛さ（必須） -->
+                <div class="option-section">
+                    <div class="option-section-title">
+                        🌶️ <span data-i18n="spiciness">辛さ</span>
+                        <span class="required-badge">必須</span>
+                    </div>
+                    <div id="spiciness-options">
+                        <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+                
+                <!-- メイン（必須） -->
+                <div class="option-section">
+                    <div class="option-section-title">
+                        🍚 <span data-i18n="main">メイン</span>
+                        <span class="required-badge">必須</span>
+                    </div>
+                    <div id="main-options">
+                        <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+                
+                <!-- ドリンク（必須） -->
+                <div class="option-section">
+                    <div class="option-section-title">
+                        🥤 <span data-i18n="drink">ドリンク</span>
+                        <span class="required-badge">必須</span>
+                    </div>
+                    <div id="drink-options">
+                        <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+                
+                <!-- トッピング（任意・複数選択） -->
+                <div class="option-section">
+                    <div class="option-section-title">
+                        🍖 <span data-i18n="toppings">トッピング</span>
+                        <span style="font-size: 12px; color: var(--text-secondary);">(複数選択可)</span>
+                    </div>
+                    <div id="topping-options">
+                        <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数量選択 -->
+            <div class="quantity-section">
+                <div class="flex-between mb-md">
+                    <span class="form-label" data-i18n="quantity">数量</span>
+                    <div class="quantity-control">
+                        <button id="qty-minus">-</button>
+                        <span class="quantity" id="quantity">1</span>
+                        <button id="qty-plus">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- その他要望 -->
+            <div class="card">
+                <label for="special-notes" class="form-label">📝 その他要望（任意）</label>
+                <textarea 
+                    id="special-notes" 
+                    class="form-input" 
+                    rows="3" 
+                    placeholder="例: パクチー抜き、アレルギー情報など"
+                    style="resize: vertical;"
+                ></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 下部固定バー -->
+    <div class="bottom-bar">
+        <div class="bottom-bar-content">
+            <div class="total-price">
+                <div class="total-price-label" data-i18n="total">合計</div>
+                <div class="total-price-amount" id="total-price">¥0</div>
+            </div>
+            <button class="btn btn-primary btn-lg" id="add-to-cart-btn" style="flex: 2;">
+                <span data-i18n="add_to_cart">カートに追加</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/menu_detail.js"></script>
+</body>
+</html>

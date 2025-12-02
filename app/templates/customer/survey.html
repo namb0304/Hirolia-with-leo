@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - アンケート</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+    <style>
+        /* スワイプ選択用の追加スタイル */
+        .swipe-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .swipe-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .swipe-item {
+            min-width: 140px;
+            height: 140px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: var(--bg-primary);
+            transition: all 0.3s ease;
+            scroll-snap-align: center;
+            flex-shrink: 0;
+        }
+        
+        .swipe-item:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        .swipe-item.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .swipe-item .icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        
+        .swipe-item .label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .scroll-indicator {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle" id="header-subtitle">アンケート</p>
+        </div>
+
+        <div class="page-container">
+            <!-- 客層選択 -->
+            <div class="card mb-lg">
+                <h2 class="card-header" id="customer-type-title">客層を選択してください</h2>
+                <div class="swipe-container" id="customer-type-container">
+                    <div class="swipe-item" data-type="friends">
+                        <div class="icon">👥</div>
+                        <div class="label" data-i18n="friends">友人</div>
+                    </div>
+                    <div class="swipe-item" data-type="family">
+                        <div class="icon">👨‍👩‍👧‍👦</div>
+                        <div class="label" data-i18n="family">家族</div>
+                    </div>
+                    <div class="swipe-item" data-type="couple">
+                        <div class="icon">💑</div>
+                        <div class="label" data-i18n="couple">恋人</div>
+                    </div>
+                    <div class="swipe-item" data-type="colleagues">
+                        <div class="icon">💼</div>
+                        <div class="label" data-i18n="colleagues">同僚</div>
+                    </div>
+                    <div class="swipe-item" data-type="other">
+                        <div class="icon">🤝</div>
+                        <div class="label" data-i18n="other">その他</div>
+                    </div>
+                </div>
+                <div class="scroll-indicator">← スワイプして選択 →</div>
+            </div>
+
+            <!-- 人数選択 -->
+            <div class="card mb-xl">
+                <h2 class="card-header" id="party-size-title">人数を選択してください</h2>
+                <div class="swipe-container" id="party-size-container">
+                    <div class="swipe-item" data-size="1">
+                        <div class="icon">1️⃣</div>
+                        <div class="label">1<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="2">
+                        <div class="icon">2️⃣</div>
+                        <div class="label">2<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="3">
+                        <div class="icon">3️⃣</div>
+                        <div class="label">3<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="4">
+                        <div class="icon">4️⃣</div>
+                        <div class="label">4<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="5">
+                        <div class="icon">5️⃣</div>
+                        <div class="label">5<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="6">
+                        <div class="icon">6️⃣</div>
+                        <div class="label">6<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="7">
+                        <div class="icon">7️⃣</div>
+                        <div class="label">7<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="8">
+                        <div class="icon">8️⃣</div>
+                        <div class="label">8<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="9">
+                        <div class="icon">9️⃣</div>
+                        <div class="label">9<span data-i18n="people">名</span></div>
+                    </div>
+                    <div class="swipe-item" data-size="10">
+                        <div class="icon">🔟</div>
+                        <div class="label" data-i18n="more_than_10">10名以上</div>
+                    </div>
+                </div>
+                <div class="scroll-indicator">← スワイプして選択 →</div>
+            </div>
+
+            <!-- ボタン -->
+            <div class="flex" style="gap: 16px;">
+                <button class="btn btn-outline" id="back-btn" style="flex: 1;">
+                    <span data-i18n="back">戻る</span>
+                </button>
+                <button class="btn btn-primary btn-lg" id="next-btn" style="flex: 2;" disabled>
+                    <span data-i18n="next">次へ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/survey.js"></script>
+</body>
+</html>

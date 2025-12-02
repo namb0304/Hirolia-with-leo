@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - カート</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle">🛒 <span data-i18n="cart">カート</span></p>
+        </div>
+
+        <div class="page-container" style="padding-bottom: 160px;">
+            <!-- カートアイテム一覧 -->
+            <div id="cart-items-container">
+                <!-- JavaScriptで生成 -->
+            </div>
+            
+            <!-- 空のカート -->
+            <div id="empty-cart" class="hidden">
+                <div class="card text-center">
+                    <div style="font-size: 64px; margin-bottom: 16px;">🛒</div>
+                    <h3 class="mb-md" data-i18n="empty_cart">カートは空です</h3>
+                    <button class="btn btn-primary" onclick="navigateTo('/customer/menu')">
+                        <span data-i18n="menu">メニューに戻る</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 下部固定バー -->
+    <div class="bottom-bar" id="cart-bottom-bar" style="padding: 16px;">
+        <div style="max-width: 640px; margin: 0 auto;">
+            <!-- 合計金額 -->
+            <div class="flex-between mb-md">
+                <span class="form-label" data-i18n="total">合計</span>
+                <span class="product-price" id="cart-total">¥0</span>
+            </div>
+            
+            <!-- ボタン -->
+            <div class="flex" style="gap: 16px;">
+                <button class="btn btn-outline" style="flex: 1;" onclick="navigateTo('/customer/menu')">
+                    <span data-i18n="back">戻る</span>
+                </button>
+                <button class="btn btn-success btn-lg" style="flex: 2;" id="place-order-btn">
+                    <span data-i18n="place_order">注文する</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 注文確認モーダル -->
+    <div class="modal-overlay" id="confirm-order-modal">
+        <div class="modal">
+            <div class="modal-header">🍛 注文を確定しますか?</div>
+            <div class="modal-body">
+                <p class="mb-md" data-i18n="confirm_order">注文を確定しますか?</p>
+                <p style="color: var(--danger-color); font-size: 14px;" data-i18n="cannot_cancel">
+                    確定後はキャンセルできません
+                </p>
+                <div class="card mt-md" style="background-color: var(--bg-secondary);">
+                    <div class="flex-between">
+                        <span data-i18n="total">合計</span>
+                        <span class="product-price" id="modal-total">¥0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('confirm-order-modal')">
+                    <span data-i18n="cancel">キャンセル</span>
+                </button>
+                <button class="btn btn-success" style="flex: 1;" id="confirm-order-btn">
+                    <span data-i18n="confirm">確定</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/cart.js"></script>
+</body>
+</html>

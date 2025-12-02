@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - 注文履歴</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+    <style>
+        .order-group {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .order-time {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: 600;
+        }
+        
+        .status-preparing {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .status-served {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .order-item {
+            background-color: var(--bg-primary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .order-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .order-item-name {
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .order-item-quantity {
+            color: var(--text-secondary);
+            margin-right: var(--spacing-sm);
+        }
+        
+        .order-item-price {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .order-item-options {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        .total-summary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .total-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .total-summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: var(--spacing-sm);
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: var(--font-xl);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Hirolia</h1>
+            <p class="subtitle">📋 <span data-i18n="order_history">注文履歴</span></p>
+        </div>
+
+        <div class="page-container" style="padding-bottom: 100px;">
+            <!-- 注文履歴 -->
+            <div id="orders-container">
+                <!-- JavaScriptで生成 -->
+            </div>
+            
+            <!-- 空の注文履歴 -->
+            <div id="empty-orders" class="hidden">
+                <div class="card text-center">
+                    <div style="font-size: 64px; margin-bottom: 16px;">📋</div>
+                    <h3 class="mb-md">まだ注文がありません</h3>
+                    <button class="btn btn-primary" onclick="navigateTo('/customer/menu')">
+                        <span data-i18n="menu">メニューに戻る</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 下部固定バー -->
+    <div class="bottom-bar" id="checkout-bottom-bar">
+        <div style="max-width: 640px; margin: 0 auto;">
+            <div class="total-summary">
+                <div class="total-summary-row">
+                    <span data-i18n="total">合計</span>
+                    <span id="grand-total">¥0</span>
+                </div>
+            </div>
+            <div class="flex" style="gap: 16px;">
+                <button class="btn btn-outline" style="flex: 1;" onclick="navigateTo('/customer/menu')">
+                    <span data-i18n="back">戻る</span>
+                </button>
+                <button class="btn btn-success btn-lg" style="flex: 2;" id="checkout-btn">
+                    <span data-i18n="checkout">会計する</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 会計確認モーダル -->
+    <div class="modal-overlay" id="checkout-confirm-modal">
+        <div class="modal">
+            <div class="modal-header">💳 会計を確定しますか?</div>
+            <div class="modal-body">
+                <p class="mb-md" data-i18n="checkout_confirm">会計を確定しますか?</p>
+                <p style="color: var(--danger-color); font-size: 14px; margin-bottom: 16px;" data-i18n="cannot_go_back">
+                    確定後は画面が戻れなくなります
+                </p>
+                <div class="card" style="background-color: var(--bg-secondary);">
+                    <div class="flex-between mb-sm">
+                        <span>注文数</span>
+                        <span id="modal-order-count">0件</span>
+                    </div>
+                    <div class="flex-between" style="font-size: 20px; font-weight: 700; color: var(--primary-color);">
+                        <span data-i18n="total">合計</span>
+                        <span id="modal-grand-total">¥0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('checkout-confirm-modal')">
+                    <span data-i18n="cancel">キャンセル</span>
+                </button>
+                <button class="btn btn-success" style="flex: 1;" id="confirm-checkout-btn">
+                    <span data-i18n="confirm">確定</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- タブバー -->
+    <div class="tab-bar">
+        <div class="tab-item" onclick="navigateTo('/customer/cart')">
+            <div class="icon">🛒</div>
+            <div class="label" data-i18n="tab_cart">カート</div>
+        </div>
+        <div class="tab-item" id="tab-naan">
+            <div class="icon">🍞</div>
+            <div class="label" data-i18n="tab_naan">ナンおかわり</div>
+        </div>
+        <div class="tab-item" id="tab-call">
+            <div class="icon">🔔</div>
+            <div class="label" data-i18n="tab_call">店員呼出</div>
+        </div>
+        <div class="tab-item active">
+            <div class="icon">📋</div>
+            <div class="label" data-i18n="tab_history">注文履歴</div>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/checkout.js"></script>
+</body>
+</html>

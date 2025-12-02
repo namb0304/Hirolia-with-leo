@@ -5,5 +5,6 @@ from app import create_app
 app = create_app()
 
 if __name__ == "__main__":
-    print("アクセスURL: http://localhost:2222")
+    print("アクセスURL: http://localhost:2222/customer/table")
     app.run(debug=True, port=2222)
+    

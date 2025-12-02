@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirolia - レジ案内</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
+    <style>
+        .receipt-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .receipt-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-xl);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            color: white;
+        }
+        
+        .receipt-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .receipt-title {
+            font-size: var(--font-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .receipt-subtitle {
+            font-size: var(--font-md);
+            opacity: 0.9;
+        }
+        
+        .receipt-info {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .receipt-row:last-child {
+            border-bottom: none;
+        }
+        
+        .receipt-label {
+            color: var(--text-secondary);
+        }
+        
+        .receipt-value {
+            font-weight: 600;
+        }
+        
+        .receipt-total {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        .receipt-total-label {
+            font-size: var(--font-md);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .receipt-total-amount {
+            font-size: 48px;
+            font-weight: 700;
+        }
+        
+        .receipt-instruction {
+            text-align: center;
+            padding: var(--spacing-xl);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .receipt-instruction-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .receipt-instruction-text {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .thank-you {
+            text-align: center;
+            padding: var(--spacing-xl);
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .order-summary {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .order-summary-item {
+            background-color: var(--bg-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .order-summary-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .order-summary-details {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="background-color: var(--bg-secondary);">
+        <div class="receipt-container">
+            <!-- ヘッダー -->
+            <div class="receipt-header">
+                <div class="receipt-icon">✅</div>
+                <div class="receipt-title" data-i18n="checkout_complete">会計を確定しました</div>
+                <div class="receipt-subtitle">
+                    <span id="checkout-time"></span>
+                </div>
+            </div>
+            
+            <!-- テーブル情報 -->
+            <div class="receipt-info">
+                <div class="receipt-row">
+                    <span class="receipt-label">テーブル番号</span>
+                    <span class="receipt-value" id="table-number">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">注文件数</span>
+                    <span class="receipt-value" id="order-count">0件</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">合計商品数</span>
+                    <span class="receipt-value" id="item-count">0点</span>
+                </div>
+            </div>
+            
+            <!-- 注文サマリー -->
+            <div class="order-summary" id="order-summary">
+                <!-- JavaScriptで生成 -->
+            </div>
+            
+            <!-- 合計金額 -->
+            <div class="receipt-total">
+                <div class="receipt-total-label" data-i18n="total">合計金額</div>
+                <div class="receipt-total-amount" id="total-amount">¥0</div>
+            </div>
+            
+            <!-- レジ案内 -->
+            <div class="receipt-instruction">
+                <div class="receipt-instruction-icon">💳</div>
+                <div class="receipt-instruction-text" data-i18n="show_at_register">
+                    この画面をレジでお見せください
+                </div>
+            </div>
+            
+            <!-- ありがとうメッセージ -->
+            <div class="thank-you">
+                <div style="font-size: 48px; margin-bottom: 16px;">🙏</div>
+                <div data-i18n="thank_you">ありがとうございました</div>
+            </div>
+            
+            <!-- 注意事項 -->
+            <div class="card text-center" style="background-color: rgba(255, 107, 53, 0.1); border: 2px solid var(--primary-color);">
+                <p style="color: var(--primary-color); font-weight: 600;">
+                    ⚠️ この画面から追加注文はできません
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/common.js"></script>
+    <script>
+        // ====================================
+        // レジ案内画面 JavaScript
+        // ====================================
+        
+        // DOM要素
+        const checkoutTimeDisplay = document.getElementById('checkout-time');
+        const tableNumberDisplay = document.getElementById('table-number');
+        const orderCountDisplay = document.getElementById('order-count');
+        const itemCountDisplay = document.getElementById('item-count');
+        const totalAmountDisplay = document.getElementById('total-amount');
+        const orderSummaryContainer = document.getElementById('order-summary');
+        
+        // 会計情報の表示
+        function displayReceipt() {
+            const session = getSessionData();
+            
+            // 会計済みでない場合は注文履歴に戻す
+            if (!session.isCheckedOut || !session.checkoutData) {
+                navigateTo('/customer/history');
+                return;
+            }
+            
+            const checkoutData = session.checkoutData;
+            const lang = getCurrentLanguage();
+            
+            // 時刻
+            const checkoutTime = new Date(checkoutData.checkoutTime);
+            checkoutTimeDisplay.textContent = checkoutTime.toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // テーブル番号
+            tableNumberDisplay.textContent = checkoutData.tableNumber;
+            
+            // 注文件数
+            orderCountDisplay.textContent = `${checkoutData.orders.length}件`;
+            
+            // 商品数
+            let totalItems = 0;
+            checkoutData.orders.forEach(order => {
+                order.items.forEach(item => {
+                    totalItems += item.quantity;
+                });
+            });
+            itemCountDisplay.textContent = `${totalItems}点`;
+            
+            // 合計金額
+            totalAmountDisplay.textContent = formatPrice(checkoutData.totalAmount);
+            
+            // 注文サマリーの描画
+            renderOrderSummary(checkoutData.orders, lang);
+        }
+        
+        // 注文サマリーの描画
+        function renderOrderSummary(orders, lang) {
+            orderSummaryContainer.innerHTML = '';
+            
+            orders.forEach((order, orderIndex) => {
+                const orderTime = new Date(order.orderTime);
+                const timeString = orderTime.toLocaleTimeString('ja-JP', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                order.items.forEach(item => {
+                    const name = item[`name_${lang}`] || item.name_ja;
+                    
+                    // 小計計算
+                    let itemTotal = item.price * item.quantity;
+                    if (item.options) {
+                        if (item.options.main) itemTotal += item.options.main.price * item.quantity;
+                        if (item.options.drink) itemTotal += item.options.drink.price * item.quantity;
+                        if (item.options.toppings) {
+                            item.options.toppings.forEach(topping => {
+                                itemTotal += topping.price * item.quantity;
+                            });
+                        }
+                    }
+                    
+                    const div = document.createElement('div');
+                    div.className = 'order-summary-item';
+                    div.innerHTML = `
+                        <div class="order-summary-header">
+                            <span>${name} ×${item.quantity}</span>
+                            <span>${formatPrice(itemTotal)}</span>
+                        </div>
+                        <div class="order-summary-details">⏰ ${timeString}</div>
+                    `;
+                    
+                    orderSummaryContainer.appendChild(div);
+                });
+            });
+        }
+        
+        // UI言語の更新
+        function updateUILanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.dataset.i18n;
+                element.textContent = t(key);
+            });
+        }
+        
+        // テーブルをリセット（実際のAPIコールに置き換える）
+        function resetTable() {
+            const session = getSessionData();
+            console.log('Table reset triggered for table:', session.tableNumber);
+            
+            // ここで実際のAPIを呼び出して、テーブルをリセット
+            // - seat_sessions.status → 'ended'
+            // - seat_sessions.ended_at → 現在時刻
+            // - tables.status → 'available'
+        }
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            // セッションチェック
+            const session = getSessionData();
+            if (!session.tableNumber || !session.language) {
+                navigateTo('/customer/table');
+                return;
+            }
+            
+            // UI言語を更新
+            updateUILanguage();
+            
+            // レシート情報を表示
+            displayReceipt();
+            
+            // テーブルをリセット
+            resetTable();
+            
+            // 注文履歴とカートをクリア
+            localStorage.removeItem('hirolia_orders');
+            clearCart();
+        });
+    </script>
+</body>
+</html>
