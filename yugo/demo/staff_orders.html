@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スタッフ注文管理</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background:#f5f5f5; }
+
+/* ヘッダー */
+header { 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:white; 
+    padding:15px 30px; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+header h1 { font-size:24px; }
+.header-actions { display:flex; gap:15px; align-items:center; }
+.notification-icon { 
+    position:relative; 
+    background:rgba(255,255,255,0.2); 
+    padding:8px 15px; 
+    border-radius:8px; 
+    cursor:pointer;
+    font-size:18px;
+}
+.notification-badge { 
+    position:absolute; 
+    top:-5px; 
+    right:-5px; 
+    background:#ff4757; 
+    color:white; 
+    border-radius:50%; 
+    padding:2px 8px; 
+    font-size:12px;
+    display:none;
+}
+.notification-badge.active { display:block; }
+.logout-btn { 
+    background:rgba(255,255,255,0.2); 
+    color:white; 
+    border:none; 
+    padding:8px 15px; 
+    border-radius:8px; 
+    cursor:pointer; 
+    text-decoration:none;
+}
+.logout-btn:hover { background:rgba(255,255,255,0.3); }
+
+/* メインエリア */
+.main { display:flex; padding:20px; gap:20px; max-width:1400px; margin:0 auto; }
+
+/* 左側：テーブル一覧 */
+.table-list { 
+    width:220px; 
+    display:grid; 
+    grid-template-columns:1fr 1fr;
+    gap:12px; 
+    height:fit-content;
+}
+.table-item { 
+    padding:20px 10px; 
+    border-radius:10px; 
+    color:white; 
+    text-align:center; 
+    cursor:pointer; 
+    position:relative;
+    font-weight:bold;
+    font-size:16px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.table-item:hover { transform:translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+/* テーブル状態別の色 */
+.table-item.empty { background:#95a5a6; } /* 空席 */
+.table-item.occupied { background:#3498db; } /* 使用中 */
+.table-item.pending-payment { background:#f39c12; } /* 会計待ち */
+.table-item.active { 
+    outline: 3px solid #2ecc71; 
+    outline-offset: 2px;
+}
+
+/* 通知マーク（新規注文あり） */
+.table-item.notification::after {
+    content: attr(data-badge); 
+    position:absolute; 
+    right:8px; 
+    top:8px; 
+    background:#e74c3c; 
+    width:24px; 
+    height:24px;
+    border-radius:50%; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    font-size:14px;
+    font-weight:bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform:scale(1); opacity:1; }
+    50% { transform:scale(1.1); opacity:0.8; }
+}
+
+/* 右側：注文詳細パネル */
+.side-panel {
+    flex-grow:1; 
+    background:#fff; 
+    border-radius:12px;
+    padding:25px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.side-panel h3 { 
+    color:#333; 
+    margin-bottom:20px; 
+    padding-bottom:10px; 
+    border-bottom:2px solid #667eea;
+    font-size:22px;
+}
+
+.empty-state {
+    text-align:center;
+    color:#999;
+    padding:60px 20px;
+    font-size:16px;
+}
+
+/* 注文アイテム */
+.order-section { margin-bottom:25px; }
+.order-section h4 { 
+    color:#667eea; 
+    margin-bottom:12px; 
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.order-time {
+    color:#999;
+    font-size:13px;
+    font-weight:normal;
+}
+
+.order-item { 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center;
+    margin:10px 0; 
+    padding:12px;
+    background:#f8f9fa;
+    border-radius:8px;
+    border-left:4px solid #667eea;
+    transition: all 0.3s;
+}
+.order-item:hover { background:#e9ecef; }
+
+.order-item-info {
+    flex-grow:1;
+}
+.order-item-name { 
+    font-weight:600; 
+    color:#333;
+    font-size:15px;
+}
+.order-item-options {
+    font-size:13px;
+    color:#666;
+    margin-top:3px;
+}
+
+/* ステータスラベル */
+.status-label {
+    padding:4px 12px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:bold;
+    margin-right:10px;
+}
+.status-pending { background:#ffebee; color:#c62828; }
+.status-delivered { background:#e8f5e9; color:#2e7d32; }
+
+/* 提供済み */
+.order-item.delivered { 
+    opacity:0.6;
+    border-left-color:#ccc;
+}
+.order-item.delivered .order-item-name { 
+    text-decoration:line-through; 
+    color:#999; 
+}
+
+/* ボタン */
+.btn { 
+    padding:6px 14px; 
+    cursor:pointer; 
+    border:none; 
+    border-radius:6px; 
+    font-size:13px;
+    font-weight:600;
+    transition: all 0.3s;
+}
+.btn:hover { opacity:0.85; transform:translateY(-1px); }
+.btn:disabled { 
+    opacity:0.5; 
+    cursor:not-allowed; 
+    transform:none;
+}
+
+.btn-primary { background:#667eea; color:white; }
+.btn-success { background:#2ecc71; color:white; }
+.btn-warning { background:#f39c12; color:white; }
+.btn-danger { background:#e74c3c; color:white; }
+
+/* アクションエリア */
+.action-area {
+    margin-top:25px;
+    padding-top:20px;
+    border-top:2px solid #eee;
+    display:flex;
+    gap:10px;
+}
+
+/* モーダル */
+.modal {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    overflow-y:auto;
+}
+.modal.active { display:flex; }
+.modal-content {
+    background:white;
+    border-radius:12px;
+    width:90%;
+    max-width:600px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.modal-header {
+    padding:20px;
+    border-bottom:1px solid #eee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.modal-header h3 { color:#333; font-size:20px; }
+.close-btn {
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:#999;
+}
+.close-btn:hover { color:#333; }
+.modal-body { padding:20px; }
+.modal-footer {
+    padding:20px;
+    border-top:1px solid #eee;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+/* 会計詳細 */
+.checkout-item {
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #f0f0f0;
+}
+.checkout-total {
+    margin-top:15px;
+    padding-top:15px;
+    border-top:2px solid #333;
+    font-size:18px;
+    font-weight:bold;
+    text-align:right;
+}
+.payment-method {
+    margin-top:20px;
+}
+.payment-method label {
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+.payment-method select {
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    font-size:14px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📋 スタッフ注文管理</h1>
+    <div class="header-actions">
+        <div class="notification-icon" onclick="showAllOrdersHistory()">
+            🔔 <span id="notificationBadge" class="notification-badge">0</span>
+        </div>
+        <a href="#" class="logout-btn" onclick="alert('ログアウト機能（未実装）')">ログアウト</a>
+    </div>
+</header>
+
+<div class="main">
+    <div class="table-list" id="tableList"></div>
+    <div class="side-panel" id="sidePanel">
+        <h3>テーブル詳細</h3>
+        <div class="empty-state">
+            <p>👈 左側のテーブルを選択してください</p>
+        </div>
+    </div>
+</div>
+
+<div id="checkoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>💰 会計処理</h3>
+            <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="checkoutDetails"></div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="closeCheckoutModal()">キャンセル</button>
+            <button class="btn btn-success" id="confirmCheckoutBtn" onclick="confirmCheckout()">会計完了</button>
+        </div>
+    </div>
+</div>
+
+<div id="historyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📜 注文履歴</h3>
+            <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="historyBody">
+            <p>読み込み中...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========================
+// ダミーデータ
+// ========================
+let tablesData = [
+    { id:1, number:1, is_occupied:true, has_pending_payment:false },
+    { id:2, number:2, is_occupied:true, has_pending_payment:false },
+    { id:3, number:3, is_occupied:false, has_pending_payment:false },
+    { id:4, number:4, is_occupied:true, has_pending_payment:false },
+    { id:5, number:5, is_occupied:false, has_pending_payment:false },
+    { id:6, number:6, is_occupied:true, has_pending_payment:true },
+    { id:7, number:7, is_occupied:false, has_pending_payment:false },
+    { id:8, number:8, is_occupied:true, has_pending_payment:false },
+    { id:9, number:9, is_occupied:false, has_pending_payment:false },
+    { id:10, number:10, is_occupied:false, has_pending_payment:false }
+];
+
+let ordersData = {
+    1: [
+        { id:101, table_id:1, name:'チキンカレーセット', options:'辛さ: 中辛, ナン: ガーリック', status:'pending', price:1200 },
+        { id:102, table_id:1, name:'マンゴーラッシー', options:null, status:'pending', price:500 }
+    ],
+    2: [
+        { id:201, table_id:2, name:'バターチキンカレー', options:'辛さ: 甘口', status:'delivered', price:1300 }
+    ],
+    6: [
+        { id:601, table_id:6, name:'マトンカレーセット', options:'辛さ: 中辛', status:'delivered', price:1400 }
+    ]
+};
+
+// ========================
+// グローバル変数
+// ========================
+let currentTableId = null;
+
+// ========================
+// 初期表示
+// ========================
+document.addEventListener('DOMContentLoaded', () => {
+    renderTables();
+    updateNotificationBadge();
+});
+
+// ========================
+// テーブル一覧描画
+// ========================
+function renderTables() {
+    const container = document.getElementById('tableList');
+    container.innerHTML = tablesData.map(table => {
+        let statusClass = 'empty';
+        if(table.has_pending_payment){ statusClass='pending-payment'; }
+        else if(table.is_occupied){ statusClass='occupied'; }
+
+        const pendingCount = ordersData[table.id]?.filter(o=>o.status==='pending').length || 0;
+        const notificationClass = pendingCount>0 ? 'notification' : '';
+        const badgeAttr = pendingCount>0 ? `data-badge="${pendingCount}"` : '';
+
+        const activeClass = currentTableId===table.id ? 'active':'';
+        return `<div class="table-item ${statusClass} ${notificationClass} ${activeClass}" ${badgeAttr} data-id="${table.id}" onclick="selectTable(${table.id})">
+            #${table.number}
+        </div>`;
+    }).join('');
+}
+
+// ========================
+// テーブル選択
+// ========================
+function selectTable(tableId){
+    currentTableId = tableId;
+    const table = tablesData.find(t=>t.id===tableId);
+    const orders = ordersData[tableId] || [];
+
+    renderTables();
+
+    const panel = document.getElementById('sidePanel');
+    if(orders.length===0){
+        panel.innerHTML = `<h3>テーブル #${table.number}</h3><div class="empty-state"><p>📝 注文はありません</p></div>`;
+        return;
+    }
+
+    const groupedOrders = {
+        pending: orders.filter(o=>o.status==='pending'),
+        delivered: orders.filter(o=>o.status==='delivered')
+    };
+
+    let html = `<h3>テーブル #${table.number}</h3>`;
+
+    const statusConfig = {
+        pending:{label:'📥 注文受付', color:'pending'},
+        delivered:{label:'✔️ 提供済み', color:'delivered'}
+    };
+
+    Object.entries(statusConfig).forEach(([status, config])=>{
+        if(groupedOrders[status].length>0){
+            html+=`<div class="order-section">`;
+            html+=`<h4>${config.label} <span class="order-time">(${groupedOrders[status].length}件)</span></h4>`;
+
+            groupedOrders[status].forEach(order=>{
+                const deliveredClass = status==='delivered'?'delivered':'';
+                html+=`
+                <div class="order-item ${deliveredClass}" data-order-id="${order.id}">
+                    <div class="order-item-info">
+                        <div class="order-item-name">${order.name}</div>
+                        ${order.options?`<div class="order-item-options">${order.options}</div>`:''}
+                    </div>
+                    <span class="status-label status-${config.color}">${config.label.split(' ')[1]}</span>
+                    ${status==='pending'?getOrderActionButton(order):''}
+                </div>
+                `;
+            });
+            html+=`</div>`;
+        }
+    });
+
+    const hasDeliveredOrders = groupedOrders.delivered.length>0 || groupedOrders.pending.length>0;
+    if(hasDeliveredOrders && !table.has_pending_payment){
+        html+=`<div class="action-area">
+            <button class="btn btn-warning" onclick="requestCheckout(${tableId})">💰 会計を呼ぶ</button>
+        </div>`;
+    }
+
+    if(table.has_pending_payment){
+        html+=`<div class="action-area">
+            <button class="btn btn-danger" onclick="openCheckoutModal(${tableId})">💳 会計を完了する</button>
+        </div>`;
+    }
+
+    panel.innerHTML = html;
+}
+
+// ========================
+// ボタン生成
+// ========================
+function getOrderActionButton(order){
+    return `<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'delivered')">提供済みにする</button>`;
+}
+
+// ========================
+// 注文ステータス更新
+// ========================
+function updateOrderStatus(orderId, newStatus){
+    for(let tableId in ordersData){
+        const order = ordersData[tableId].find(o=>o.id===orderId);
+        if(order){ order.status=newStatus; break; }
+    }
+    selectTable(currentTableId);
+    renderTables();
+    updateNotificationBadge();
+}
+
+// ========================
+// 会計機能
+// ========================
+function requestCheckout(tableId){
+    const table = tablesData.find(t=>t.id===tableId);
+    table.has_pending_payment=true;
+    alert(`テーブル #${table.number} が会計を要求しました`);
+    renderTables();
+    selectTable(tableId);
+}
+
+function openCheckoutModal(tableId){
+    const table = tablesData.find(t=>t.id===tableId);
+    const orders = ordersData[tableId] || [];
+    const totalAmount = orders.reduce((sum,o)=>sum+(o.price||0),0);
+
+    let detailsHtml=`<h4>テーブル #${table.number}</h4>
+    <div style="max-height:300px
+        ; overflow-y:auto;">`;
+    orders.forEach(o=>{
+        detailsHtml+=`<div class="checkout-item">
+            <span>${o.name}${o.options?` (${o.options})`:''}</span>
+            <span>¥${o.price}</span>
+        </div>`;
+    });
+    detailsHtml+=`<div class="checkout-total">合計: ¥${totalAmount}</div>`;
+    document.getElementById('checkoutDetails').innerHTML = detailsHtml;
+
+    document.getElementById('confirmCheckoutBtn').dataset.tableId = tableId;
+    document.getElementById('checkoutModal').classList.add('active');
+}
+
+function closeCheckoutModal(){
+    document.getElementById('checkoutModal').classList.remove('active');
+}
+
+function confirmCheckout(){
+    const tableId = parseInt(document.getElementById('confirmCheckoutBtn').dataset.tableId);
+    // 注文データ削除・テーブル空席化
+    delete ordersData[tableId];
+    const table = tablesData.find(t=>t.id===tableId);
+    table.is_occupied = false;
+    table.has_pending_payment = false;
+
+    renderTables();
+    selectTable(tableId);
+    closeCheckoutModal();
+    alert(`テーブル #${table.number} の会計が完了しました`);
+}
+
+// ========================
+// 通知バッジ更新
+// ========================
+function updateNotificationBadge(){
+    let pendingCount = 0;
+    for(let tableId in ordersData){
+        pendingCount += ordersData[tableId].filter(o=>o.status==='pending').length;
+    }
+    const badge = document.getElementById('notificationBadge');
+    badge.textContent = pendingCount;
+    if(pendingCount>0) badge.classList.add('active');
+    else badge.classList.remove('active');
+}
+
+// ========================
+// 注文履歴モーダル
+// ========================
+function showAllOrdersHistory(){
+    const historyBody = document.getElementById('historyBody');
+    let html = '';
+
+    const allOrders = [];
+    for(let tableId in ordersData){
+        ordersData[tableId].forEach(o=>{
+            allOrders.push({...o, tableNumber: tablesData.find(t=>t.id==tableId).number});
+        });
+    }
+
+    if(allOrders.length===0){
+        html = '<p>📝 履歴はありません</p>';
+    } else {
+        // ステータス順でグループ化
+        const grouped = { pending:[], delivered:[] };
+        allOrders.forEach(o=> grouped[o.status].push(o));
+
+        const statusConfig = {
+            pending:{label:'📥 注文受付', color:'pending'},
+            delivered:{label:'✔️ 提供済み', color:'delivered'}
+        };
+
+        Object.entries(statusConfig).forEach(([status, config])=>{
+            if(grouped[status].length>0){
+                html+=`<div class="order-section"><h4>${config.label} (${grouped[status].length}件)</h4>`;
+                grouped[status].forEach(o=>{
+                    const deliveredClass = status==='delivered'?'delivered':'';
+                    html+=`
+                    <div class="order-item ${deliveredClass}">
+                        <div class="order-item-info">
+                            <div class="order-item-name">テーブル #${o.tableNumber}: ${o.name}</div>
+                            ${o.options?`<div class="order-item-options">${o.options}</div>`:''}
+                        </div>
+                        <span class="status-label status-${config.color}">${config.label.split(' ')[1]}</span>
+                    </div>
+                    `;
+                });
+                html+='</div>';
+            }
+        });
+    }
+
+    historyBody.innerHTML = html;
+    document.getElementById('historyModal').classList.add('active');
+}
+
+function closeHistoryModal(){
+    document.getElementById('historyModal').classList.remove('active');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+/* 基本スタイル */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+    color: #333;
+}
+header {
+    background: #222;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    text-align: center;
+}
+.container {
+    padding: 20px;
+}
+
+/* テーブル表示 */
+.table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.table:hover {
+    background: #e6f0ff;
+}
+.table.empty { background: #f0f0f0; }
+.table.occupied { background: #cce5ff; }
+
+/* 通知マーク */
+.notification {
+    background: red;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 注文一覧（アコーディオン） */
+.orders {
+    display: none;
+    margin: 5px 0 15px 20px;
+    padding-left: 10px;
+    border-left: 2px solid #007bff;
+}
+.order-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.order-item span {
+    font-weight: bold;
+}
+.status-order { color: black; }
+.status-warning { color: #28a745; }
+.status-alert { color: #dc3545; }
+.status-delivered { text-decoration: line-through; color: gray; }
+
+button {
+    padding: 3px 6px;
+    cursor: pointer;
+    background: #007bff;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    font-size: 12px;
+}
+button:hover {
+    background: #0056b3;
+}
