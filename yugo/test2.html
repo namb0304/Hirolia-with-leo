@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>スタッフ注文管理 - サイドパネル方式</title>
+<style>
+body { font-family: Arial; margin:0; background:#f9f9f9; }
+header { background:#222; color:white; padding:15px; text-align:center; font-size:20px; }
+
+/* メインエリア */
+.main { display:flex; padding:20px; gap:20px; }
+
+/* 左側：テーブル一覧 */
+.table-list { width:200px; display:flex; flex-direction:column; gap:10px; position:relative; }
+.table-item { padding:10px; border-radius:6px; color:white; text-align:center; cursor:pointer; position:relative; }
+.table-item.empty { background:gray; }
+.table-item.occupied { background:#007bff; }
+
+/* 通知マーク */
+.table-item.notification::after {
+    content:"!"; 
+    position:absolute; right:5px; top:5px; 
+    background:red; width:18px; height:18px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px;
+}
+
+/* 右側：注文詳細パネル */
+.side-panel {
+    flex-grow:1; 
+    background:#fff; 
+    border:1px solid #ccc; 
+    border-radius:6px;
+    padding:15px; 
+    max-height:500px; 
+    overflow-y:auto;
+}
+
+.order-item { 
+    display:flex; 
+    justify-content:space-between; 
+    margin:8px 0; 
+    border-bottom:1px solid #eee; 
+    padding-bottom:5px; 
+}
+
+.status-delivered { 
+    text-decoration:line-through; 
+    color:gray; 
+}
+
+button { 
+    padding:2px 6px; 
+    cursor:pointer; 
+    background:#007bff; 
+    color:white; 
+    border:none; 
+    border-radius:3px; 
+}
+button:hover { background:#0056b3; }
+
+</style>
+</head>
+<body>
+<header>スタッフ注文管理（サイドパネル方式）</header>
+<div class="main">
+    <!-- 左側：テーブル一覧 -->
+    <div class="table-list">
+        <div class="table-item occupied" data-id="1">#1</div>
+        <div class="table-item occupied" data-id="2">#2</div>
+        <div class="table-item empty" data-id="3">#3</div>
+        <div class="table-item occupied" data-id="4">#4</div>
+        <div class="table-item empty" data-id="5">#5</div>
+    </div>
+
+    <!-- 右側：サイドパネル -->
+    <div class="side-panel" id="sidePanel">
+        <h3>テーブル詳細</h3>
+        <p>テーブルを選択してください</p>
+    </div>
+</div>
+
+<script>
+// 注文データ（仮データ）
+const ordersData = {
+    1:[{name:'ラーメン', status:'order'},{name:'餃子', status:'order'}],
+    2:[{name:'チャーハン', status:'order'}],
+    4:[{name:'唐揚げ', status:'order'}]
+};
+
+// ページ読み込み時に通知マークを付与
+document.querySelectorAll('.table-item').forEach(item=>{
+    const id = item.dataset.id;
+    if(ordersData[id] && ordersData[id].length > 0){
+        item.classList.add('notification'); // 注文があるテーブルに通知マーク
+    }
+
+    // テーブルクリックで右側パネルに詳細表示
+    item.addEventListener('click', ()=>{
+        const panel = document.getElementById('sidePanel');
+        panel.innerHTML = `<h3>テーブル #${id}</h3>`;
+        const orders = ordersData[id];
+        if(!orders || orders.length===0){ 
+            panel.innerHTML += "<p>注文なし</p>"; 
+            return;
+        }
+        orders.forEach((o, index)=>{
+            const div = document.createElement('div');
+            div.classList.add('order-item');
+            div.innerHTML = `<span>${o.name}</span> <button>渡し済み</button>`;
+            const btn = div.querySelector('button');
+            btn.addEventListener('click', ()=>{
+                div.classList.add('status-delivered');
+                // 注文ステータスを更新
+                ordersData[id][index].status = 'delivered';
+                // 全て渡し済みなら通知マークを消す
+                const hasPending = ordersData[id].some(ord=>ord.status==='order');
+                if(!hasPending) item.classList.remove('notification');
+            });
+            panel.appendChild(div);
+        });
+    });
+});
+</script>
+</body>
+</html>
