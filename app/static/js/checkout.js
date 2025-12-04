@@ -7,7 +7,7 @@ let orders = [];
 // DOM要素
 const ordersContainer = document.getElementById('orders-container');
 const emptyOrders = document.getElementById('empty-orders');
-const checkoutBottomBar = document.getElementById('checkout-bottom-bar');
+const checkoutTotalBar = document.getElementById('checkout-total-bar');
 const grandTotalDisplay = document.getElementById('grand-total');
 const modalGrandTotal = document.getElementById('modal-grand-total');
 const modalOrderCount = document.getElementById('modal-order-count');
@@ -25,10 +25,10 @@ function loadAndRenderOrders() {
     if (orders.length === 0) {
         emptyOrders.classList.remove('hidden');
         ordersContainer.innerHTML = '';
-        checkoutBottomBar.style.display = 'none';
+        if (checkoutTotalBar) checkoutTotalBar.style.display = 'none';
     } else {
         emptyOrders.classList.add('hidden');
-        checkoutBottomBar.style.display = 'block';
+        if (checkoutTotalBar) checkoutTotalBar.style.display = 'flex';
         renderOrders();
         updateGrandTotal();
     }
@@ -230,48 +230,106 @@ function calculateGrandTotal() {
 // ナンおかわり
 tabNaan.addEventListener('click', () => {
     const menuItems = getDummyMenuItems();
-    const naanItem = menuItems.find(item => item.category === 'naan' && item.id === 4);
+    const naanItems = menuItems.filter(item => item.category === 'naan');
+    const lang = getCurrentLanguage();
     
-    if (naanItem) {
-        const cart = getCart();
-        const existingItem = cart.find(item => item.id === naanItem.id && !item.options);
+    // モーダルのコンテナを取得
+    const container = document.getElementById('naan-options-container');
+    container.innerHTML = '';
+    
+    // ナンオプションを作成
+    naanItems.forEach(naanItem => {
+        const name = naanItem[`name_${lang}`] || naanItem.name_ja;
+        const div = document.createElement('div');
+        div.className = 'card mb-md';
+        div.style.cursor = 'pointer';
+        div.style.transition = 'all 0.2s ease';
+        div.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: 700; margin-bottom: 4px;">${name}</div>
+                    <div style="color: var(--primary-color); font-weight: 700;">${formatPrice(naanItem.price)}</div>
+                </div>
+                <div style="font-size: 32px;">🍞</div>
+            </div>
+        `;
         
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({
-                id: naanItem.id,
-                name_ja: naanItem.name_ja,
-                name_en: naanItem.name_en,
-                name_ne: naanItem.name_ne,
-                price: naanItem.price,
-                image_url: naanItem.image_url,
-                quantity: 1,
-                options: null
-            });
-        }
+        div.addEventListener('click', () => {
+            addNaanToCart(naanItem);
+            hideModal('naan-select-modal');
+        });
         
-        saveCart(cart);
+        div.addEventListener('mouseenter', () => {
+            div.style.backgroundColor = 'var(--bg-secondary)';
+            div.style.borderColor = 'var(--primary-color)';
+        });
         
-        const lang = getCurrentLanguage();
-        const message = lang === 'ja' ? 'ナンをカートに追加しました' :
-                       lang === 'en' ? 'Naan added to cart' :
-                       'कार्टमा नान थपियो';
-        showToast(message, 'success', 2000);
-    }
+        div.addEventListener('mouseleave', () => {
+            div.style.backgroundColor = 'var(--bg-primary)';
+            div.style.borderColor = 'var(--border-color)';
+        });
+        
+        container.appendChild(div);
+    });
+    
+    showModal('naan-select-modal');
 });
+
+// ナンをカートに追加
+function addNaanToCart(naanItem) {
+    const cart = getCart();
+    const existingItem = cart.find(item => item.id === naanItem.id && !item.options);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: naanItem.id,
+            name_ja: naanItem.name_ja,
+            name_en: naanItem.name_en,
+            name_ne: naanItem.name_ne,
+            price: naanItem.price,
+            image_url: naanItem.image_url,
+            quantity: 1,
+            options: null
+        });
+    }
+    
+    saveCart(cart);
+    
+    const lang = getCurrentLanguage();
+    const message = lang === 'ja' ? 'ナンをカートに追加しました' :
+                   lang === 'en' ? 'Naan added to cart' :
+                   'कार्टमा नान थपियो';
+    showToast(message, 'success', 2000);
+}
 
 // 店員呼び出し
 tabCall.addEventListener('click', () => {
     const session = getSessionData();
-    console.log('Staff call requested for table:', session.tableNumber);
-    
-    const lang = getCurrentLanguage();
-    const message = lang === 'ja' ? '店員を呼び出しました' :
-                   lang === 'en' ? 'Staff has been called' :
-                   'स्टाफलाई बोलाइएको छ';
-    showToast(message, 'success', 2000);
+    const callTableNumber = document.getElementById('call-table-number');
+    if (callTableNumber) {
+        callTableNumber.textContent = session.tableNumber || '-';
+    }
+    showModal('call-staff-modal');
 });
+
+// 店員呼び出し確定
+const confirmCallBtn = document.getElementById('confirm-call-btn');
+if (confirmCallBtn) {
+    confirmCallBtn.addEventListener('click', () => {
+        hideModal('call-staff-modal');
+        
+        const session = getSessionData();
+        console.log('Staff call requested for table:', session.tableNumber);
+        
+        const lang = getCurrentLanguage();
+        const message = lang === 'ja' ? '店員を呼び出しました' :
+                       lang === 'en' ? 'Staff has been called' :
+                       'स्टाफलाई बोलाइएको छ';
+        showToast(message, 'success', 2000);
+    });
+}
 
 // UI言語の更新
 function updateUILanguage() {

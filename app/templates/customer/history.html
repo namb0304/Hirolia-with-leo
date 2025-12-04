@@ -102,7 +102,7 @@
             <p class="subtitle">📋 <span data-i18n="order_history">注文履歴</span></p>
         </div>
 
-        <div class="page-container" style="padding-bottom: 100px;">
+        <div class="page-container with-total-bar">
             <!-- 注文履歴 -->
             <div id="orders-container">
                 <!-- JavaScriptで生成 -->
@@ -121,23 +121,29 @@
         </div>
     </div>
     
-    <!-- 下部固定バー -->
-    <div class="bottom-bar" id="checkout-bottom-bar">
-        <div style="max-width: 640px; margin: 0 auto;">
-            <div class="total-summary">
-                <div class="total-summary-row">
-                    <span data-i18n="total">合計</span>
-                    <span id="grand-total">¥0</span>
-                </div>
-            </div>
-            <div class="flex" style="gap: 16px;">
-                <button class="btn btn-outline" style="flex: 1;" onclick="navigateTo('/customer/menu')">
-                    <span data-i18n="back">戻る</span>
-                </button>
-                <button class="btn btn-success btn-lg" style="flex: 2;" id="checkout-btn">
-                    <span data-i18n="checkout">会計する</span>
-                </button>
-            </div>
+    <!-- 合計金額バー (固定表示) -->
+    <div class="total-bar" id="checkout-total-bar">
+        <div class="label" data-i18n="total">合計</div>
+        <div class="amount" id="grand-total">¥0</div>
+    </div>
+    
+    <!-- タブバー -->
+    <div class="tab-bar">
+        <div class="tab-item" onclick="navigateTo('/customer/menu')">
+            <div class="icon">🏠</div>
+            <div class="label" data-i18n="menu">メニュー</div>
+        </div>
+        <div class="tab-item" id="tab-naan">
+            <div class="icon">🍞</div>
+            <div class="label" data-i18n="tab_naan">ナン</div>
+        </div>
+        <div class="tab-item" id="tab-call">
+            <div class="icon">🔔</div>
+            <div class="label" data-i18n="tab_call">呼出</div>
+        </div>
+        <div class="tab-item" id="checkout-btn">
+            <div class="icon">💳</div>
+            <div class="label" data-i18n="checkout">会計</div>
         </div>
     </div>
     
@@ -147,7 +153,7 @@
             <div class="modal-header">💳 会計を確定しますか?</div>
             <div class="modal-body">
                 <p class="mb-md" data-i18n="checkout_confirm">会計を確定しますか?</p>
-                <p style="color: var(--danger-color); font-size: 14px; margin-bottom: 16px;" data-i18n="cannot_go_back">
+                <p style="color: var(--danger-color); font-size: var(--font-sm); margin-bottom: var(--spacing-md);" data-i18n="cannot_go_back">
                     確定後は画面が戻れなくなります
                 </p>
                 <div class="card" style="background-color: var(--bg-secondary);">
@@ -155,7 +161,7 @@
                         <span>注文数</span>
                         <span id="modal-order-count">0件</span>
                     </div>
-                    <div class="flex-between" style="font-size: 20px; font-weight: 700; color: var(--primary-color);">
+                    <div class="flex-between" style="font-size: var(--font-lg); font-weight: 700; color: var(--primary-color);">
                         <span data-i18n="total">合計</span>
                         <span id="modal-grand-total">¥0</span>
                     </div>
@@ -171,24 +177,37 @@
             </div>
         </div>
     </div>
-
-    <!-- タブバー -->
-    <div class="tab-bar">
-        <div class="tab-item" onclick="navigateTo('/customer/cart')">
-            <div class="icon">🛒</div>
-            <div class="label" data-i18n="tab_cart">カート</div>
+    
+    <!-- 店員呼び出し確認モーダル -->
+    <div class="modal-overlay" id="call-staff-modal">
+        <div class="modal">
+            <div class="modal-header">🔔 店員を呼びますか?</div>
+            <div class="modal-body">
+                テーブル <span id="call-table-number">-</span> から店員を呼び出します
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('call-staff-modal')">
+                    <span data-i18n="cancel">キャンセル</span>
+                </button>
+                <button class="btn btn-primary" style="flex: 1;" id="confirm-call-btn">
+                    <span data-i18n="confirm">呼ぶ</span>
+                </button>
+            </div>
         </div>
-        <div class="tab-item" id="tab-naan">
-            <div class="icon">🍞</div>
-            <div class="label" data-i18n="tab_naan">ナンおかわり</div>
-        </div>
-        <div class="tab-item" id="tab-call">
-            <div class="icon">🔔</div>
-            <div class="label" data-i18n="tab_call">店員呼出</div>
-        </div>
-        <div class="tab-item active">
-            <div class="icon">📋</div>
-            <div class="label" data-i18n="tab_history">注文履歴</div>
+    </div>
+    
+    <!-- ナン選択モーダル -->
+    <div class="modal-overlay" id="naan-select-modal">
+        <div class="modal">
+            <div class="modal-header">🍞 <span data-i18n="selectNaan">ナンを選択</span></div>
+            <div class="modal-body" id="naan-options-container">
+                <!-- JavaScriptで生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" style="flex: 1;" onclick="hideModal('naan-select-modal')">
+                    <span data-i18n="cancel">キャンセル</span>
+                </button>
+            </div>
         </div>
     </div>
 

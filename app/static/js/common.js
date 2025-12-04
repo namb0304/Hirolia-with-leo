@@ -37,6 +37,7 @@ const translations = {
         'tab_naan': 'ナンおかわり',
         'tab_call': '店員呼出',
         'tab_history': '注文履歴',
+        'selectNaan': 'ナンを選択',
         
         // 初期設定
         'enter_table': 'テーブル番号を入力',
@@ -101,6 +102,7 @@ const translations = {
         'tab_naan': 'Naan Refill',
         'tab_call': 'Call Staff',
         'tab_history': 'History',
+        'selectNaan': 'Select Naan',
         
         // Initial setup
         'enter_table': 'Enter Table Number',
@@ -165,6 +167,7 @@ const translations = {
         'tab_naan': 'नान थप',
         'tab_call': 'स्टाफ बोलाउनुहोस्',
         'tab_history': 'अर्डर इतिहास',
+        'selectNaan': 'नान चयन गर्नुहोस्',
         
         // Initial setup
         'enter_table': 'टेबल नम्बर प्रविष्ट गर्नुहोस्',
@@ -332,7 +335,7 @@ function getDummyMenuItems() {
             description_ne: 'नरम स्वाद सहितको क्लासिक करी',
             price: 1200,
             category: 'curry',
-            image_url: 'https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=Butter+Chicken'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         {
             id: 2,
@@ -344,7 +347,7 @@ function getDummyMenuItems() {
             description_ne: 'मसालेदार मासु करी',
             price: 1100,
             category: 'curry',
-            image_url: 'https://via.placeholder.com/400x300/F7931E/FFFFFF?text=Keema+Curry'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         {
             id: 3,
@@ -356,7 +359,7 @@ function getDummyMenuItems() {
             description_ne: 'ताजा तरकारी सहितको करी',
             price: 1000,
             category: 'curry',
-            image_url: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Vegetable+Curry'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         
         // ナン
@@ -370,7 +373,7 @@ function getDummyMenuItems() {
             description_ne: 'साधारण ताजा नान',
             price: 300,
             category: 'naan',
-            image_url: 'https://via.placeholder.com/400x300/FFD700/000000?text=Plain+Naan'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         {
             id: 5,
@@ -382,7 +385,7 @@ function getDummyMenuItems() {
             description_ne: 'पग्लिएको चीज सहितको नान',
             price: 500,
             category: 'naan',
-            image_url: 'https://via.placeholder.com/400x300/FFA500/FFFFFF?text=Cheese+Naan'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         
         // ドリンク
@@ -396,7 +399,7 @@ function getDummyMenuItems() {
             description_ne: 'मीठो र ताजा दही पेय',
             price: 400,
             category: 'drinks',
-            image_url: 'https://via.placeholder.com/400x300/FFB347/FFFFFF?text=Mango+Lassi'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         {
             id: 7,
@@ -408,7 +411,7 @@ function getDummyMenuItems() {
             description_ne: 'मसालेदार भारतीय चिया',
             price: 300,
             category: 'drinks',
-            image_url: 'https://via.placeholder.com/400x300/8B4513/FFFFFF?text=Chai'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         
         // デザート
@@ -422,7 +425,7 @@ function getDummyMenuItems() {
             description_ne: 'धनी चिसो आँप मिठाई',
             price: 400,
             category: 'desserts',
-            image_url: 'https://via.placeholder.com/400x300/FFD700/000000?text=Mango+Pudding'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         
         // サイドメニュー
@@ -436,7 +439,7 @@ function getDummyMenuItems() {
             description_ne: 'मसालेदार ओभन पकाएको चिकन',
             price: 800,
             category: 'sides',
-            image_url: 'https://via.placeholder.com/400x300/DC143C/FFFFFF?text=Tandoori+Chicken'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         },
         {
             id: 10,
@@ -448,7 +451,7 @@ function getDummyMenuItems() {
             description_ne: 'क्रिस्पी मसालेदार',
             price: 400,
             category: 'sides',
-            image_url: 'https://via.placeholder.com/400x300/DAA520/FFFFFF?text=Samosa'
+            image_url: '/static/images/menu/butter-chicken.jpg'
         }
     ];
 }

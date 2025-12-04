@@ -118,38 +118,92 @@ tabCart.addEventListener('click', () => {
 });
 
 tabNaan.addEventListener('click', () => {
-    // ナンをカートに追加
-    const naanItem = menuItems.find(item => item.category === 'naan' && item.id === 4); // プレーンナン
+    // ナンの種類を選択させるモーダルを表示
+    const naanItems = menuItems.filter(item => item.category === 'naan');
     
-    if (naanItem) {
-        const cart = getCart();
-        const existingItem = cart.find(item => item.id === naanItem.id && !item.options);
-        
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({
-                id: naanItem.id,
-                name_ja: naanItem.name_ja,
-                name_en: naanItem.name_en,
-                name_ne: naanItem.name_ne,
-                price: naanItem.price,
-                image_url: naanItem.image_url,
-                quantity: 1,
-                options: null
-            });
-        }
-        
-        saveCart(cart);
-        updateCartBadge();
-        
-        const lang = getCurrentLanguage();
-        const message = lang === 'ja' ? 'ナンをカートに追加しました' :
-                       lang === 'en' ? 'Naan added to cart' :
-                       'कार्टमा नान थपियो';
-        showToast(message, 'success', 2000);
+    if (naanItems.length === 0) {
+        showToast(translations[currentLanguage].error || 'エラーが発生しました', 'error');
+        return;
     }
+    
+    // モーダルを動的に作成
+    const modalHTML = `
+        <div class="modal-overlay" id="naanSelectModal">
+            <div class="modal">
+                <div class="modal-header">
+                    ${translations[currentLanguage].selectNaan || 'ナンを選択'}
+                </div>
+                <div class="modal-body">
+                    <div class="naan-options">
+                        ${naanItems.map(naan => `
+                            <div class="naan-option-card" data-naan-id="${naan.id}">
+                                <div class="naan-name">${naan[`name_${currentLanguage}`]}</div>
+                                <div class="naan-price">${formatPrice(naan.price)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline btn-full" onclick="closeNaanModal()">
+                        ${translations[currentLanguage].cancel || 'キャンセル'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // モーダルを追加
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const modal = document.getElementById('naanSelectModal');
+    setTimeout(() => modal.classList.add('show'), 10);
+    
+    // ナン選択時のイベント
+    document.querySelectorAll('.naan-option-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const naanId = parseInt(card.dataset.naanId);
+            const selectedNaan = naanItems.find(n => n.id === naanId);
+            
+            if (selectedNaan) {
+                addNaanToCart(selectedNaan);
+                closeNaanModal();
+            }
+        });
+    });
 });
+
+// ナンをカートに追加
+function addNaanToCart(naanItem) {
+    const cart = getCart();
+    const existingItem = cart.find(item => item.id === naanItem.id && !item.options);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: naanItem.id,
+            name_ja: naanItem.name_ja,
+            name_en: naanItem.name_en,
+            name_ne: naanItem.name_ne,
+            price: naanItem.price,
+            quantity: 1,
+            image_url: naanItem.image_url, // image → image_url に修正
+            options: null
+        });
+    }
+    
+    saveCart(cart);
+    updateCartBadge();
+    showToast(translations[currentLanguage].addedToCart || 'カートに追加しました', 'success');
+}
+
+// ナン選択モーダルを閉じる
+window.closeNaanModal = function() {
+    const modal = document.getElementById('naanSelectModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+    }
+};
 
 tabCall.addEventListener('click', () => {
     const session = getSessionData();

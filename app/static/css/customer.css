@@ -1,5 +1,6 @@
 /* ====================================
-   Hirolia - 顧客側 統一スタイルシート
+   Hirolia - スマホ専用デザイン
+   iPhone基準 (375px幅を想定)
    ==================================== */
 
 /* ----- リセット & 基本設定 ----- */
@@ -7,112 +8,130 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* タップ時のハイライト無効化 */
 }
 
 :root {
-    /* カラーパレット */
-    --primary-color: #FF6B35;
-    --secondary-color: #F7931E;
-    --success-color: #4CAF50;
-    --danger-color: #F44336;
-    --warning-color: #FFC107;
-    --info-color: #2196F3;
+    /* 落ち着いた配色パレット */
+    --primary-color: #D97757; /* 落ち着いたテラコッタオレンジ */
+    --secondary-color: #E8A87C; /* 柔らかいゴールド */
+    --success-color: #52B788; /* 落ち着いた緑 */
+    --danger-color: #E76F51; /* 落ち着いた赤 */
+    --warning-color: #F4A261; /* 柔らかい警告色 */
+    --info-color: #577399; /* 落ち着いた青 */
     
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --text-light: #999999;
+    --text-primary: #2D3748; /* ダークグレー */
+    --text-secondary: #718096; /* ミディアムグレー */
+    --text-light: #A0AEC0; /* ライトグレー */
     
     --bg-primary: #FFFFFF;
-    --bg-secondary: #F5F5F5;
-    --bg-dark: #212121;
+    --bg-secondary: #F7FAFC; /* 非常に薄いグレー */
+    --bg-tertiary: #EDF2F7; /* 薄いグレー */
+    --bg-dark: #2D3748;
     
-    --border-color: #E0E0E0;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --border-color: #E2E8F0; /* 薄いボーダー */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
     
-    /* スペーシング */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
+    /* スマホ最適化スペーシング */
+    --spacing-xs: 6px;
+    --spacing-sm: 12px;
+    --spacing-md: 20px;
+    --spacing-lg: 28px;
+    --spacing-xl: 40px;
     
-    /* フォントサイズ */
-    --font-xs: 12px;
-    --font-sm: 14px;
-    --font-md: 16px;
-    --font-lg: 18px;
-    --font-xl: 24px;
-    --font-xxl: 32px;
+    /* スマホ最適化フォントサイズ */
+    --font-xs: 13px;
+    --font-sm: 15px;
+    --font-md: 17px;
+    --font-lg: 20px;
+    --font-xl: 26px;
+    --font-xxl: 34px;
     
     /* ボーダー半径 */
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
     --radius-full: 9999px;
 }
 
+/* スマホ専用: 画面全体の最適化 */
+html {
+    font-size: 16px; /* ベースサイズ */
+    -webkit-text-size-adjust: 100%; /* iOS Safariのフォントサイズ自動調整を無効化 */
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
     color: var(--text-primary);
     background-color: var(--bg-secondary);
     line-height: 1.6;
     overflow-x: hidden;
+    min-height: 100vh;
+    /* スマホでのスクロールを滑らかに */
+    -webkit-overflow-scrolling: touch;
 }
 
-/* ----- コンテナ ----- */
+/* ----- スマホ専用コンテナ ----- */
 .container {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: var(--spacing-md);
+    max-width: 100vw; /* 画面幅いっぱい */
+    width: 100%;
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
     background-color: var(--bg-primary);
 }
 
 .page-container {
-    padding-bottom: 80px; /* タブバー分の余白 */
+    padding: var(--spacing-md);
+    padding-bottom: 100px; /* タブバー分の余白(大きめ) */
 }
 
-/* ----- ヘッダー ----- */
+/* ----- スマホ専用ヘッダー (コンパクト版) ----- */
 .header {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     text-align: center;
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .header h1 {
-    font-size: var(--font-xl);
-    font-weight: 600;
+    font-size: var(--font-lg); /* 26px → 20px に縮小 */
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-bottom: var(--spacing-xs);
 }
 
 .header .subtitle {
-    font-size: var(--font-sm);
-    opacity: 0.9;
-    margin-top: var(--spacing-xs);
+    font-size: var(--font-sm); /* 17px → 15px に縮小 */
+    opacity: 0.95;
+    font-weight: 500;
 }
 
-/* ----- ボタン ----- */
+/* ----- スマホ専用ボタン(指で押しやすく) ----- */
 .btn {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 16px 28px; /* 大きめ */
+    min-height: 52px; /* タップしやすい最小高さ */
     border: none;
     border-radius: var(--radius-md);
     font-size: var(--font-md);
-    font-weight: 600;
+    font-weight: 700;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     text-decoration: none;
     box-shadow: var(--shadow);
+    touch-action: manipulation; /* タップ遅延を防ぐ */
+    user-select: none;
 }
 
 .btn:active {
-    transform: translateY(2px);
+    transform: scale(0.97); /* タップ時の視覚フィードバック */
 }
 
 .btn-primary {
@@ -120,9 +139,8 @@ body {
     color: white;
 }
 
-.btn-primary:hover {
+.btn-primary:active {
     background-color: #E55A2B;
-    box-shadow: var(--shadow-hover);
 }
 
 .btn-secondary {
@@ -142,7 +160,7 @@ body {
 
 .btn-outline {
     background-color: transparent;
-    border: 2px solid var(--primary-color);
+    border: 3px solid var(--primary-color); /* 境界を太く */
     color: var(--primary-color);
 }
 
@@ -151,12 +169,14 @@ body {
 }
 
 .btn-lg {
-    padding: 16px 32px;
+    padding: 20px 32px;
+    min-height: 60px;
     font-size: var(--font-lg);
 }
 
 .btn-sm {
-    padding: 8px 16px;
+    padding: 10px 20px;
+    min-height: 44px; /* iOSの最小タップサイズ */
     font-size: var(--font-sm);
 }
 
@@ -165,27 +185,29 @@ body {
     cursor: not-allowed;
 }
 
-/* ----- カード ----- */
+/* ----- スマホ専用カード ----- */
 .card {
     background-color: var(--bg-primary);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
     padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .card-header {
-    font-size: var(--font-lg);
-    font-weight: 600;
+    font-size: var(--font-xl);
+    font-weight: 700;
     margin-bottom: var(--spacing-md);
     color: var(--text-primary);
 }
 
 .card-body {
     color: var(--text-secondary);
+    font-size: var(--font-md);
+    line-height: 1.7;
 }
 
-/* ----- フォーム ----- */
+/* ----- スマホ専用フォーム ----- */
 .form-group {
     margin-bottom: var(--spacing-lg);
 }
@@ -193,23 +215,27 @@ body {
 .form-label {
     display: block;
     font-size: var(--font-md);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: var(--spacing-sm);
     color: var(--text-primary);
 }
 
 .form-input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 16px 20px;
+    min-height: 52px; /* タップしやすい高さ */
     border: 2px solid var(--border-color);
     border-radius: var(--radius-md);
-    font-size: var(--font-md);
-    transition: border-color 0.3s ease;
+    font-size: var(--font-lg); /* 大きく読みやすく */
+    transition: border-color 0.2s ease;
+    /* iOSのズーム防止 */
+    font-size: 16px;
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
 .form-input.error {
@@ -220,60 +246,65 @@ body {
     color: var(--danger-color);
     font-size: var(--font-sm);
     margin-top: var(--spacing-xs);
+    font-weight: 600;
 }
 
-/* ----- 選択ボタン ----- */
+/* ----- スマホ専用選択ボタン ----- */
 .option-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: var(--spacing-md);
     margin-top: var(--spacing-md);
 }
 
 .option-btn {
     padding: var(--spacing-lg);
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-md);
+    min-height: 100px; /* タップしやすい高さ */
+    border: 3px solid var(--border-color);
+    border-radius: var(--radius-lg);
     background-color: var(--bg-primary);
     cursor: pointer;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
 }
 
-.option-btn:hover {
-    border-color: var(--primary-color);
-    background-color: rgba(255, 107, 53, 0.05);
+.option-btn:active {
+    transform: scale(0.95);
 }
 
 .option-btn.selected {
     border-color: var(--primary-color);
     background-color: var(--primary-color);
     color: white;
+    box-shadow: var(--shadow-hover);
 }
 
 .option-btn .icon {
-    font-size: var(--font-xl);
+    font-size: 40px; /* 絵文字を大きく */
     margin-bottom: var(--spacing-sm);
 }
 
 .option-btn .label {
-    font-size: var(--font-sm);
-    font-weight: 600;
+    font-size: var(--font-md);
+    font-weight: 700;
 }
 
-/* ----- タブバー (固定下部) ----- */
+/* ----- スマホ専用タブバー (完全固定・画面幅いっぱい) ----- */
 .tab-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    width: 100vw; /* 画面幅いっぱい */
     background-color: var(--bg-primary);
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-around;
-    padding: var(--spacing-sm) 0;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
     z-index: 1000;
+    margin: 0; /* マージンをゼロに */
 }
 
 .tab-item {
@@ -281,57 +312,68 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding: var(--spacing-sm);
+    min-height: 64px;
     color: var(--text-secondary);
     text-decoration: none;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: all 0.2s ease;
+    position: relative;
+    touch-action: manipulation;
 }
 
-.tab-item:hover,
+.tab-item:active {
+    background-color: var(--bg-secondary);
+}
+
 .tab-item.active {
     color: var(--primary-color);
 }
 
 .tab-item .icon {
-    font-size: 24px;
-    margin-bottom: var(--spacing-xs);
+    font-size: 28px;
+    margin-bottom: 4px;
 }
 
 .tab-item .label {
     font-size: var(--font-xs);
+    font-weight: 600;
 }
 
 .tab-item .badge {
     position: absolute;
-    top: 4px;
-    right: 20%;
+    top: 8px;
+    right: calc(50% - 20px);
     background-color: var(--danger-color);
     color: white;
     border-radius: var(--radius-full);
-    padding: 2px 6px;
-    font-size: 10px;
-    font-weight: 600;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
 }
 
-/* ----- 商品カード ----- */
+/* ----- スマホ専用商品カード ----- */
 .product-card {
     background-color: var(--bg-primary);
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
 }
 
-.product-card:hover {
+.product-card:active {
+    transform: scale(0.98);
     box-shadow: var(--shadow-hover);
-    transform: translateY(-4px);
 }
 
 .product-card .image {
     width: 100%;
-    height: 180px;
+    height: 200px; /* 大きめ */
     object-fit: cover;
     background-color: var(--bg-secondary);
 }
@@ -342,8 +384,9 @@ body {
 
 .product-card .name {
     font-size: var(--font-lg);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
 }
 
 .product-card .price {
@@ -360,12 +403,13 @@ body {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-height: 1.6;
 }
 
-/* ----- カートアイテム ----- */
+/* ----- スマホ専用カートアイテム ----- */
 .cart-item {
     background-color: var(--bg-primary);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     box-shadow: var(--shadow);
@@ -374,27 +418,31 @@ body {
 }
 
 .cart-item .image {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: var(--radius-md);
     object-fit: cover;
     background-color: var(--bg-secondary);
+    flex-shrink: 0;
 }
 
 .cart-item .details {
     flex: 1;
+    min-width: 0;
 }
 
 .cart-item .name {
     font-size: var(--font-md);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
 }
 
 .cart-item .options {
     font-size: var(--font-sm);
     color: var(--text-secondary);
     margin-bottom: var(--spacing-xs);
+    line-height: 1.5;
 }
 
 .cart-item .price {
@@ -408,6 +456,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
+    gap: var(--spacing-sm);
 }
 
 .quantity-control {
@@ -417,43 +466,47 @@ body {
 }
 
 .quantity-control button {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
     background-color: var(--bg-primary);
     cursor: pointer;
     font-size: var(--font-lg);
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
 }
 
-.quantity-control button:hover {
+.quantity-control button:active {
     background-color: var(--bg-secondary);
 }
 
 .quantity-control .quantity {
     min-width: 40px;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: var(--font-md);
 }
 
-/* ----- モーダル ----- */
+/* ----- スマホ専用モーダル ----- */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    padding: var(--spacing-md);
 }
 
 .modal-overlay.show {
@@ -465,12 +518,13 @@ body {
     background-color: var(--bg-primary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);
-    max-width: 90%;
-    max-height: 90vh;
+    width: 100%;
+    max-width: 90vw;
+    max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     transform: scale(0.9);
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .modal-overlay.show .modal {
@@ -479,15 +533,18 @@ body {
 
 .modal-header {
     font-size: var(--font-xl);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: var(--spacing-lg);
     text-align: center;
+    line-height: 1.4;
 }
 
 .modal-body {
     margin-bottom: var(--spacing-lg);
     text-align: center;
     color: var(--text-secondary);
+    font-size: var(--font-md);
+    line-height: 1.7;
 }
 
 .modal-footer {
@@ -495,7 +552,11 @@ body {
     gap: var(--spacing-md);
 }
 
-/* ----- ローディング ----- */
+.modal-footer .btn {
+    flex: 1;
+}
+
+/* ----- スマホ専用ローディング ----- */
 .loading {
     display: flex;
     flex-direction: column;
@@ -505,33 +566,38 @@ body {
 }
 
 .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid var(--border-color);
+    width: 56px;
+    height: 56px;
+    border: 5px solid var(--border-color);
     border-top-color: var(--primary-color);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* ----- トースト通知 ----- */
+/* ----- スマホ専用トースト通知 ----- */
 .toast {
     position: fixed;
-    top: 80px;
+    top: calc(env(safe-area-inset-top) + 80px); /* iPhoneノッチ対応 */
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--bg-dark);
     color: white;
     padding: var(--spacing-md) var(--spacing-lg);
     border-radius: var(--radius-full);
-    box-shadow: var(--shadow-hover);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     z-index: 3000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    min-width: 200px;
+    max-width: 90vw;
+    text-align: center;
+    font-size: var(--font-md);
+    font-weight: 600;
 }
 
 .toast.show {
@@ -547,14 +613,95 @@ body {
     background-color: var(--danger-color);
 }
 
-/* ----- レスポンシブ ----- */
-@media (max-width: 640px) {
-    .container {
-        padding: var(--spacing-sm);
+/* ----- 合計金額バー (固定表示) ----- */
+.total-bar {
+    position: fixed;
+    bottom: 72px; /* タブバーの上 */
+    left: 0;
+    right: 0;
+    width: 100vw;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+}
+
+.total-bar .label {
+    font-size: var(--font-lg);
+    font-weight: 700;
+}
+
+.total-bar .amount {
+    font-size: var(--font-xl);
+    font-weight: 700;
+}
+
+/* 合計金額バーがある場合のページ余白 */
+.page-container.with-total-bar {
+    padding-bottom: 160px; /* タブバー + 合計金額バー分 */
+}
+
+/* ----- ナン選択カード ----- */
+.naan-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.naan-option-card {
+    background-color: var(--bg-secondary);
+    border: 3px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+}
+
+.naan-option-card:active {
+    transform: scale(0.98);
+    border-color: var(--primary-color);
+    background-color: rgba(217, 119, 87, 0.1);
+}
+
+.naan-option-card .naan-name {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.naan-option-card .naan-price {
+    font-size: var(--font-xl);
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* ----- スマホ専用レスポンシブ (最小限) ----- */
+/* 基本的にスマホ専用なので、メディアクエリは最小限 */
+
+/* 極小画面 (iPhone SE など) */
+@media (max-width: 360px) {
+    :root {
+        --spacing-md: 16px;
+        --spacing-lg: 24px;
     }
     
     .option-grid {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    }
+}
+
+/* 大画面 (iPad など) - スマホレイアウトを維持しつつ中央寄せ */
+@media (min-width: 768px) {
+    .container {
+        max-width: 420px;
+        margin: 0 auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
     }
 }
 
@@ -575,7 +722,37 @@ body {
 .mt-lg { margin-top: var(--spacing-lg); }
 .mt-xl { margin-top: var(--spacing-xl); }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 .flex { display: flex; }
-.flex-center { display: flex; align-items: center; justify-content: center; }
-.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-center { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+.flex-between { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+}
+
+/* ----- スマホ用アクセシビリティ ----- */
+/* タップ可能な要素の最小サイズを確保 */
+a, button, .tab-item, .option-btn, .product-card {
+    min-height: 44px; /* Apple HIG 推奨 */
+}
+
+/* スクロール領域をスムーズに */
+.page-container, .modal {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* iPhoneのホームバー領域対応 */
+@supports (padding: max(0px)) {
+    .tab-bar {
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    
+    .page-container {
+        padding-bottom: max(100px, calc(100px + env(safe-area-inset-bottom)));
+    }
+}

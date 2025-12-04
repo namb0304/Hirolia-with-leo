@@ -13,7 +13,7 @@
             <p class="subtitle">🛒 <span data-i18n="cart">カート</span></p>
         </div>
 
-        <div class="page-container" style="padding-bottom: 160px;">
+        <div class="page-container with-total-bar">
             <!-- カートアイテム一覧 -->
             <div id="cart-items-container">
                 <!-- JavaScriptで生成 -->
@@ -32,24 +32,21 @@
         </div>
     </div>
     
-    <!-- 下部固定バー -->
-    <div class="bottom-bar" id="cart-bottom-bar" style="padding: 16px;">
-        <div style="max-width: 640px; margin: 0 auto;">
-            <!-- 合計金額 -->
-            <div class="flex-between mb-md">
-                <span class="form-label" data-i18n="total">合計</span>
-                <span class="product-price" id="cart-total">¥0</span>
-            </div>
-            
-            <!-- ボタン -->
-            <div class="flex" style="gap: 16px;">
-                <button class="btn btn-outline" style="flex: 1;" onclick="navigateTo('/customer/menu')">
-                    <span data-i18n="back">戻る</span>
-                </button>
-                <button class="btn btn-success btn-lg" style="flex: 2;" id="place-order-btn">
-                    <span data-i18n="place_order">注文する</span>
-                </button>
-            </div>
+    <!-- 合計金額バー (固定表示) -->
+    <div class="total-bar">
+        <div class="label" data-i18n="total">合計</div>
+        <div class="amount" id="cart-total">¥0</div>
+    </div>
+    
+    <!-- 注文ボタンバー -->
+    <div class="tab-bar">
+        <div class="tab-item" onclick="navigateTo('/customer/menu')">
+            <div class="icon">🏠</div>
+            <div class="label" data-i18n="menu">メニュー</div>
+        </div>
+        <div class="tab-item" id="place-order-btn">
+            <div class="icon">✅</div>
+            <div class="label" data-i18n="place_order">注文する</div>
         </div>
     </div>
     

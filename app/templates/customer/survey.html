@@ -6,15 +6,18 @@
     <title>Hirolia - アンケート</title>
     <link rel="stylesheet" href="/static/css/customer.css">
     <style>
-        /* スワイプ選択用の追加スタイル */
+        /* スワイプ選択用の追加スタイル - スマホ最適化 */
         .swipe-container {
             overflow-x: auto;
             overflow-y: hidden;
             display: flex;
-            gap: 16px;
-            padding: 16px 0;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
+            margin: 0 calc(-1 * var(--spacing-md)); /* 画面端まで広げる */
+            padding-left: var(--spacing-md);
+            padding-right: var(--spacing-md);
         }
         
         .swipe-container::-webkit-scrollbar {
@@ -22,9 +25,9 @@
         }
         
         .swipe-item {
-            min-width: 140px;
-            height: 140px;
-            border: 2px solid var(--border-color);
+            min-width: 130px;
+            height: 130px;
+            border: 3px solid var(--border-color);
             border-radius: var(--radius-lg);
             display: flex;
             flex-direction: column;
@@ -32,38 +35,38 @@
             justify-content: center;
             cursor: pointer;
             background-color: var(--bg-primary);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             scroll-snap-align: center;
             flex-shrink: 0;
+            touch-action: manipulation;
         }
         
-        .swipe-item:hover {
-            border-color: var(--primary-color);
-            background-color: rgba(255, 107, 53, 0.05);
+        .swipe-item:active {
+            transform: scale(0.95);
         }
         
         .swipe-item.selected {
             border-color: var(--primary-color);
             background-color: var(--primary-color);
             color: white;
-            transform: scale(1.05);
+            box-shadow: var(--shadow-hover);
         }
         
         .swipe-item .icon {
-            font-size: 48px;
-            margin-bottom: 8px;
+            font-size: 52px;
+            margin-bottom: var(--spacing-sm);
         }
         
         .swipe-item .label {
-            font-size: 16px;
-            font-weight: 600;
+            font-size: var(--font-md);
+            font-weight: 700;
         }
         
         .scroll-indicator {
             text-align: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 8px;
+            color: var(--text-light);
+            font-size: var(--font-sm);
+            margin-top: var(--spacing-xs);
         }
     </style>
 </head>
@@ -152,7 +155,12 @@
             </div>
 
             <!-- ボタン -->
-            <div class="flex" style="gap: 16px;">
+            <div style="height: 80px;"></div> <!-- ボタン分のスペース -->
+        </div>
+        
+        <!-- 固定ボタンバー -->
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: var(--spacing-md); box-shadow: 0 -2px 12px rgba(0,0,0,0.08); z-index: 100;">
+            <div style="display: flex; gap: var(--spacing-md);">
                 <button class="btn btn-outline" id="back-btn" style="flex: 1;">
                     <span data-i18n="back">戻る</span>
                 </button>

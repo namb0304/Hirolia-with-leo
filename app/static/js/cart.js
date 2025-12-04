@@ -7,7 +7,8 @@ let cart = [];
 // DOM要素
 const cartItemsContainer = document.getElementById('cart-items-container');
 const emptyCart = document.getElementById('empty-cart');
-const cartBottomBar = document.getElementById('cart-bottom-bar');
+const totalBar = document.querySelector('.total-bar'); // 合計金額バー
+const tabBar = document.querySelector('.tab-bar'); // タブバー
 const cartTotalDisplay = document.getElementById('cart-total');
 const modalTotalDisplay = document.getElementById('modal-total');
 const placeOrderBtn = document.getElementById('place-order-btn');
@@ -20,10 +21,12 @@ function loadAndRenderCart() {
     if (cart.length === 0) {
         emptyCart.classList.remove('hidden');
         cartItemsContainer.innerHTML = '';
-        cartBottomBar.style.display = 'none';
+        if (totalBar) totalBar.style.display = 'none';
+        if (tabBar) tabBar.style.display = 'none';
     } else {
         emptyCart.classList.add('hidden');
-        cartBottomBar.style.display = 'block';
+        if (totalBar) totalBar.style.display = 'flex';
+        if (tabBar) tabBar.style.display = 'flex';
         renderCartItems();
         updateCartTotal();
     }
